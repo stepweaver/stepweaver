@@ -1,0 +1,103 @@
+.crt-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crt-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 255, 65, 0.15) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  animation: crt-glow 8s ease-in-out infinite alternate;
+}
+
+.crt-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 255, 65, 0.04) 50%,
+    rgba(0, 0, 0, 0)
+  );
+  background-size: 100% 8px;
+  z-index: 1;
+  opacity: 0.3;
+  animation: scanline-move 10s linear infinite;
+}
+
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  background: repeating-linear-gradient(
+      transparent 0px,
+      rgba(0, 255, 65, 0.03) 1px,
+      transparent 2px
+    ),
+    radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+  mix-blend-mode: overlay;
+}
+
+.crt-vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow: inset 0 0 150px rgba(0, 255, 65, 0.1),
+    inset 0 0 50px rgba(0, 0, 0, 0.7);
+  mix-blend-mode: multiply;
+}
+
+@keyframes crt-glow {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.7;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-3%, -1%);
+    opacity: 0.7;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(3%, 1%);
+    opacity: 0.7;
+  }
+}
+
+@keyframes scanline-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
