@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 import './globals.css';
+import NavWrap from '@/components/navigation/NavWrap';
 
 const ocrFont = localFont({
   src: './fonts/OCRA.woff',
@@ -37,11 +38,14 @@ export default function RootLayout({ children }) {
       className={`${ocrFont.variable} ${ibm3270.variable} antialiased suppressHydrationWarning`}
     >
       <body className='w-full min-h-screen flex flex-col'>
+        {/* CRT Effect */}
         <div className='crt-background'></div>
         <div className='crt-overlay'></div>
         <div className='crt-vignette'></div>
 
+        {/* Main Content */}
         <div className='mx-auto w-full max-w-4xl px-4 md:px-6 flex flex-col'>
+          <NavWrap />
           <main className='flex-1 w-full pb-8'>{children}</main>
         </div>
       </body>
