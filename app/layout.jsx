@@ -1,7 +1,8 @@
 import localFont from 'next/font/local';
 import './globals.css';
-import NavWrap from '@/components/navigation/NavWrap';
-
+import NavWrap from '@/components/navigation/layout/NavWrap';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 const ocrFont = localFont({
   src: './fonts/OCRA.woff',
   variable: '--font-ocr',
@@ -45,8 +46,10 @@ export default function RootLayout({ children }) {
 
         {/* Main Content */}
         <div className='mx-auto w-full max-w-4xl px-4 md:px-6 flex flex-col'>
+          <Header />
           <NavWrap />
           <main className='flex-1 w-full pb-8'>{children}</main>
+          <Footer />
         </div>
       </body>
     </html>

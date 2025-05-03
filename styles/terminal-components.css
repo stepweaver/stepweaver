@@ -29,4 +29,22 @@
 .active-link {
   color: var(--color-terminal-green);
   text-shadow: var(--terminal-text-glow);
-} 
+}
+
+/* Lambda Symbol Styles */
+.lambda-symbol {
+  display: inline-block;
+  margin-right: 0.25rem;
+  font-weight: bold;
+  transition: color 0.1s ease;
+}
+
+.lambda-normal {
+  color: var(--color-terminal-green);
+  text-shadow: 0 0 3px rgba(0, 255, 65, 0.4);
+}
+
+.lambda-glitching {
+  color: #ff00ff;
+  text-shadow: 0 0 5px rgba(255, 0, 255, 0.8), 0 0 10px rgba(255, 0, 255, 0.4);
+}

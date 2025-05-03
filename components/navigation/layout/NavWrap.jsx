@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import MainNav from '@/components/navigation/MainNav';
-import MobileNav from '@/components/navigation/MobileNav';
+import MainNav from '@/components/navigation/layout/MainNav';
+import MobileNav from '@/components/navigation/layout/MobileNav';
 
 export default function NavWrap() {
   const pathname = usePathname();
