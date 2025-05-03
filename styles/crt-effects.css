@@ -12,15 +12,17 @@
 .crt-background::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
   background: radial-gradient(
-    ellipse at center,
-    rgba(0, 255, 65, 0.15) 0%,
+    circle at center,
+    rgba(0, 255, 65, 0.1) 0%,
+    rgba(0, 255, 65, 0.05) 40%,
     rgba(0, 0, 0, 0) 70%
   );
+  box-shadow: 0 0 60px 30px rgba(0, 255, 65, 0.06);
   animation: crt-glow 8s ease-in-out infinite alternate;
 }
 
@@ -51,25 +53,89 @@
   pointer-events: none;
   z-index: 2;
   background: repeating-linear-gradient(
-      transparent 0px,
-      rgba(0, 255, 65, 0.03) 1px,
-      transparent 2px
-    ),
-    radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+    transparent 0px,
+    rgba(0, 255, 65, 0.03) 1px,
+    transparent 2px
+  );
   mix-blend-mode: overlay;
 }
 
 .crt-vignette {
+  position: fixed;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.7),
+    inset 0 0 30px 10px rgba(0, 255, 65, 0.15),
+    inset 0 0 10px rgba(0, 255, 65, 0.2);
+  border-radius: 15% / 5%;
+  mix-blend-mode: multiply;
+}
+
+.crt-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
-  box-shadow: inset 0 0 150px rgba(0, 255, 65, 0.1),
-    inset 0 0 50px rgba(0, 0, 0, 0.7);
+  z-index: 3;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  border-radius: 20% / 10%;
   mix-blend-mode: multiply;
+  animation: crt-subtle-move 10s ease-in-out infinite alternate;
+}
+
+.crt-corners {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(
+      circle at 0 0,
+      transparent 0%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 21%,
+      transparent 22%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 100% 0,
+      transparent 0%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 21%,
+      transparent 22%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 0 100%,
+      transparent 0%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 21%,
+      transparent 22%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      transparent 0%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 21%,
+      transparent 22%,
+      transparent 100%
+    );
+  background-size: 100px 100px;
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+  background-repeat: no-repeat;
 }
 
 @keyframes crt-glow {
@@ -78,18 +144,30 @@
     opacity: 0.7;
   }
   25% {
-    opacity: 0.8;
+    opacity: 0.75;
   }
   50% {
-    transform: translate(-3%, -1%);
+    transform: translate(-2%, -1%);
     opacity: 0.7;
   }
   75% {
-    opacity: 0.9;
+    opacity: 0.75;
   }
   100% {
-    transform: translate(3%, 1%);
+    transform: translate(2%, 1%);
     opacity: 0.7;
+  }
+}
+
+@keyframes crt-subtle-move {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 

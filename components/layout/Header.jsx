@@ -55,7 +55,7 @@ export default function Header() {
             λ
           </span>
           <span className='text-terminal-green'>stepweaver</span>
-          <span className='text-terminal-text'>{formatPath()}</span>
+          <span className='text-terminal-green'>{formatPath()}</span>
           <span className='ml-1 text-terminal-green animate-blink'>_</span>
         </p>
         <div className='flex flex-col md:flex-row md:items-center md:justify-center justify-between gap-6 mt-3'>
