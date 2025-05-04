@@ -1,3 +1,5 @@
+import ContactForm from '@/components/ui/ContactForm';
+
 export const metadata = {
   title: 'About Me',
   description: 'Learn more about me and my work',
@@ -34,6 +36,9 @@ export default function AboutPage() {
           </p>
         </div>
         <div className='text-terminal-dimmed text-sm mt-2'>$ cat about.md</div>
+        <div className='mt-8'>
+          <ContactForm />
+        </div>
       </div>
     </div>
   );
