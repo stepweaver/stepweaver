@@ -1,3 +1,6 @@
+import Terminal from '@/components/terminal/Terminal';
+import TerminalWindow from '@/components/ui/TerminalWindow';
+
 export default function Home() {
   return (
     <div className='space-y-4'>
@@ -12,6 +15,11 @@ export default function Home() {
         </p>
       </div>
       <div className='text-terminal-dimmed text-sm mt-2'>$ cat welcome.md</div>
+      <div className='mt-8'>
+        <TerminalWindow title='~/terminal'>
+          <Terminal />
+        </TerminalWindow>
+      </div>
     </div>
   );
 }
