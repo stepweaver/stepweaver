@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className='space-y-8'>
+    <div className='space-y-8 mt-8'>
       <div className='space-y-4 p-4'>
         <div className='border-l-2 border-terminal-green pl-5'>
           <h2 className='text-xl text-terminal-green'>

@@ -44,7 +44,7 @@ export default async function Page({ params }) {
   const PostComponent = postComponents[type] || Post;
 
   return (
-    <div className='mt-12 flex flex-col items-center justify-center'>
+    <div className='mt-8 flex flex-col items-center justify-center'>
       <PostComponent
         type={type}
         title={frontmatter.title}

@@ -399,7 +399,7 @@ export default function CodexPage() {
   };
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-8 mt-8'>
       <div>
         {/* Filters */}
         <div className='mt-6 mb-8'>
