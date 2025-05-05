@@ -1,11 +1,34 @@
-import { NextResponse } from 'next/server';
 import { sendEmail } from '@/utils/transporter';
+import { rateLimitEmail } from '@/utils/rate-limiter';
+import { createNotificationEmail } from '@/utils/email-templates/notification';
+import { createConfirmationEmail } from '@/utils/email-templates/confirmation';
 
 export async function POST(request) {
   try {
+    // Get client IP for rate limiting
+    // Note: In production with proxies, you may need to use X-Forwarded-For header
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+
+    // Check rate limit
+    const rateLimit = rateLimitEmail(ip);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: rateLimit.message,
+          retry_after: Math.ceil(rateLimit.remainingTime / 1000), // seconds
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': Math.ceil(rateLimit.remainingTime / 1000),
+          },
+        }
+      );
+    }
+
     const data = await request.json();
     const { name, email, message } = data;
-    const subject = 'Contact Form Submission'; // Default subject since your form doesn't have one
 
     // Validate form data
     if (!name || !email || !message) {
@@ -24,42 +47,17 @@ export async function POST(request) {
     // Randomly generate a request ID
     const reqId = Math.random().toString(36).substring(2, 10).toUpperCase();
 
+    // Get email content from notification template
+    const { text: notificationText, html: notificationHtml } =
+      createNotificationEmail(name, email, message, timestamp, reqId);
+
     // Prepare email content for admin notification
     const mailOptions = {
       to: process.env.EMAIL_RECIPIENT || process.env.EMAIL_USER,
       replyTo: email,
       subject: `[CONTACT] New message from ${name}`,
-      text: `
-        New message from ${name} (${email})
-        
-        Message:
-        ${message}
-        
-        Submitted at: ${timestamp}
-        Reference: ${reqId}
-      `,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>New Contact Message</title>
-        </head>
-        <body>
-          <h2>stepweaver.dev Contact Form Submission</h2>
-          
-          <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-          
-          <div>
-            <p><strong>Message:</strong></p>
-            <p>${message.replace(/\n/g, '<br>')}</p>
-          </div>
-          
-          <p>This message was submitted via the contact form on stepweaver.dev at ${timestamp}</p>
-          <p>Reference ID: ${reqId}</p>
-        </body>
-        </html>
-      `,
+      text: notificationText,
+      html: notificationHtml,
       priority: 'high',
       headers: {
         'X-Priority': '1',
@@ -75,48 +73,16 @@ export async function POST(request) {
       throw new Error(result.error || 'Failed to send email');
     }
 
+    // Get confirmation email content from template
+    const { text: confirmationText, html: confirmationHtml } =
+      createConfirmationEmail(name, reqId);
+
     // Standard confirmation email to the user
     const confirmationMailOptions = {
       to: email,
       subject: `Thanks for reaching out to stepweaver.dev`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Message Received</title>
-        </head>
-        <body>
-          <h2>Message Received!</h2> //TODO: Custom message
-          
-          <p>Hey ${name}! 👋</p>
-          
-          <p>Thanks for reaching out via my contact form.</p>
-          
-          <p>Your message is now safely in my inbox and I'm looking forward to reading it. I'll get back to you as soon as I can!</p>
-          
-          <p>In the meantime, feel free to reply if you think of anything else you'd like to add.</p>
-          
-          <hr>
-          
-          <p>While you wait, feel free to explore more of my site.</p>
-          
-          <p style="margin-top: 20px; font-style: italic; color: #777;">Crafting digital experiences that make a difference.</p>
-          <p>Reference ID: ${reqId}</p>
-        </body>
-        </html>
-      `,
-      text: `
-        Message Received
-        
-        Hey ${name}! Thanks for reaching out! I've received your message.
-        
-        I'll review your message and get back to you soon.
-        
-        You can reply directly to this email if you'd like to add any additional information.
-        
-        Reference ID: ${reqId}
-      `,
+      text: confirmationText,
+      html: confirmationHtml,
     };
 
     // Send confirmation email to the user
