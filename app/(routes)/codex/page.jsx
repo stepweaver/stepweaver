@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import path from 'path';
 
 export default function CodexPage() {
   const searchParams = useSearchParams();
