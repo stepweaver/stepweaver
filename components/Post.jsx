@@ -6,6 +6,13 @@ export default function Post({
   hashtags,
   children,
 }) {
+  // Process hashtags to ensure we have an array to work with
+  const tagArray = Array.isArray(hashtags)
+    ? hashtags
+    : typeof hashtags === 'string'
+    ? [hashtags]
+    : [];
+
   const getTypeInfo = (type) => {
     switch (type) {
       case 'blog':
@@ -88,16 +95,11 @@ export default function Post({
             {type}
           </a>
         </div>
-      </header>
-      <div className='w-full border-b border-dashed border-terminal-dimmed'></div>
-      <section className='text-terminal-text'>
-        {children}
-
-        {hashtags && hashtags.length > 0 && (
-          <div className='flex flex-wrap gap-2 mt-4'>
-            {hashtags.map((tag) => (
+        {tagArray && tagArray.length > 0 && (
+          <div className='flex flex-wrap gap-2 mb-4'>
+            {tagArray.map((tag, index) => (
               <a
-                key={tag}
+                key={index}
                 href={`/codex?tag=${encodeURIComponent(tag)}`}
                 className={`text-sm ${hashtagStyle} cursor-pointer hover:text-terminal-text`}
               >
@@ -106,7 +108,10 @@ export default function Post({
             ))}
           </div>
         )}
-      </section>
+      </header>
+
+      <div className='w-full border-b border-dashed border-terminal-dimmed'></div>
+      <section className='text-terminal-text'>{children}</section>
     </article>
   );
 }
