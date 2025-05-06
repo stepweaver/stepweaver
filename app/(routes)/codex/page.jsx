@@ -1,12 +1,25 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useState, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/ui/PostCard';
 import TypeTagButton from '@/components/ui/TypeTagButton';
 
-function CodexPage() {
+export default function CodexPage(props) {
+  return (
+    <Suspense
+      fallback={
+        <div className='text-terminal-dimmed text-center py-8'>
+          Loading codex...
+        </div>
+      }
+    >
+      <CodexPageInner {...props} />
+    </Suspense>
+  );
+}
+
+function CodexPageInner(props) {
   const searchParams = useSearchParams();
   const tagParam = searchParams.get('tag');
 
@@ -235,19 +248,5 @@ function CodexPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function CodexPageWrapper(props) {
-  return (
-    <Suspense
-      fallback={
-        <div className='text-terminal-dimmed text-center py-8'>
-          Loading codex...
-        </div>
-      }
-    >
-      <CodexPage {...props} />
-    </Suspense>
   );
 }
