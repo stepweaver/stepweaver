@@ -3,7 +3,7 @@ import ContactForm from '@/components/ui/ContactForm';
 export const metadata = {
   title: 'About Me',
   description: 'Learn more about me and my work',
-  metadataBase: new URL('http://localhost:3000'), // TODO: CHANGE TO PROD URL - https://stepweaver.dev
+  metadataBase: new URL('https://stepweaver.dev'), // TODO: CHANGE TO PROD URL - https://stepweaver.dev
   openGraph: {
     title: 'About Me',
     description: 'Learn more about me and my work',
