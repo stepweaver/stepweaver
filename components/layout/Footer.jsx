@@ -23,7 +23,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className='pt-8 pb-6 border-t border-terminal-green/30 text-sm font-ibm'>
+    <footer className='pt-8 pb-6 text-sm font-ibm'>
       <div className='flex justify-center items-center'>
         <div className='text-terminal-text'>
           <span className='text-terminal-green'>$</span>{' '}

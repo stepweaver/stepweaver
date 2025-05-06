@@ -86,15 +86,6 @@ export default function Post({
         <h1 className='text-3xl text-terminal-green mb-2 font-ibm'>{title}</h1>
         {date && <p className='text-terminal-dimmed text-sm mb-2'>[{date}]</p>}
         {excerpt && <h2 className='text-terminal-text mb-4'>{excerpt}</h2>}
-        <div className='mb-2 flex flex-wrap gap-2'>
-          <a
-            href={`/codex?tag=${encodeURIComponent(type)}`}
-            className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${typeInfo.class}`}
-          >
-            {typeInfo.icon && <span className='mr-1'>{typeInfo.icon}</span>}
-            {type}
-          </a>
-        </div>
         {tagArray && tagArray.length > 0 && (
           <div className='flex flex-wrap gap-2 mb-4'>
             {tagArray.map((tag, index) => (
