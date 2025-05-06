@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PostCard from '@/components/ui/PostCard';
+import TypeTagButton from '@/components/ui/TypeTagButton';
 
 export default function CodexPage() {
   const searchParams = useSearchParams();
@@ -108,94 +109,73 @@ export default function CodexPage() {
               <span className='text-terminal-dimmed'>filter by type:</span>
             </div>
             <div className='flex flex-wrap gap-2 justify-evenly mx-auto max-w-4xl'>
-              <button
+              <TypeTagButton
+                type='all'
+                active={activeTypeFilter === 'all'}
                 onClick={() => setActiveTypeFilter('all')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'all'
-                    ? 'bg-terminal-green text-black border-terminal-green'
-                    : 'bg-terminal-green/20 text-terminal-green border-terminal-green'
-                }`}
               >
                 all
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='blog'
+                active={activeTypeFilter === 'blog'}
                 onClick={() => setActiveTypeFilter('blog')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'blog'
-                    ? 'bg-terminal-green text-black border-terminal-green'
-                    : 'bg-terminal-green/20 text-terminal-green border-terminal-green'
-                }`}
               >
                 {activeTypeFilter !== 'blog' && (
                   <span className='mr-1'>📝</span>
                 )}
                 blog
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='podcast'
+                active={activeTypeFilter === 'podcast'}
                 onClick={() => setActiveTypeFilter('podcast')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'podcast'
-                    ? 'bg-terminal-purple text-black border-terminal-purple'
-                    : 'bg-terminal-purple/20 text-terminal-purple border-terminal-purple'
-                }`}
               >
                 {activeTypeFilter !== 'podcast' && (
                   <span className='mr-1'>🎙️</span>
                 )}
                 podcast
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='website'
+                active={activeTypeFilter === 'website'}
                 onClick={() => setActiveTypeFilter('website')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'website'
-                    ? 'bg-terminal-yellow text-black border-terminal-yellow'
-                    : 'bg-terminal-yellow/20 text-terminal-yellow border-terminal-yellow'
-                }`}
               >
                 {activeTypeFilter !== 'website' && (
                   <span className='mr-1'>🌐</span>
                 )}
                 website
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='article'
+                active={activeTypeFilter === 'article'}
                 onClick={() => setActiveTypeFilter('article')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'article'
-                    ? 'bg-terminal-red text-black border-terminal-red'
-                    : 'bg-terminal-red/20 text-terminal-red border-terminal-red'
-                }`}
               >
                 {activeTypeFilter !== 'article' && (
                   <span className='mr-1'>📄</span>
                 )}
                 article
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='tool'
+                active={activeTypeFilter === 'tool'}
                 onClick={() => setActiveTypeFilter('tool')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'tool'
-                    ? 'bg-terminal-blue text-black border-terminal-blue'
-                    : 'bg-terminal-blue/20 text-terminal-blue border-terminal-blue'
-                }`}
               >
                 {activeTypeFilter !== 'tool' && (
                   <span className='mr-1'>🛠️</span>
                 )}
                 tool
-              </button>
-              <button
+              </TypeTagButton>
+              <TypeTagButton
+                type='project'
+                active={activeTypeFilter === 'project'}
                 onClick={() => setActiveTypeFilter('project')}
-                className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
-                  activeTypeFilter === 'project'
-                    ? 'bg-terminal-magenta text-black border-terminal-magenta'
-                    : 'bg-terminal-magenta/20 text-terminal-magenta border-terminal-magenta'
-                }`}
               >
                 {activeTypeFilter !== 'project' && (
                   <span className='mr-1'>✨</span>
                 )}
                 project
-              </button>
+              </TypeTagButton>
             </div>
           </div>
 
