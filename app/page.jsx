@@ -61,7 +61,7 @@ export default function Home() {
         </TerminalWindow>
       </div>
       <div className='mt-8'>
-        <h3 className='text-terminal-green text-lg mb-4 border-terminal-green pl-5'>
+        <h3 className='text-terminal-green text-xl mb-4 border-terminal-green pl-5'>
           # LATEST_POSTS <span className='animate-blink'>_</span>
         </h3>
         {loading ? (

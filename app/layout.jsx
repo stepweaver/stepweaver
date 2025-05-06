@@ -3,6 +3,8 @@ import './globals.css';
 import NavWrap from '@/components/navigation/layout/NavWrap';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import MatrixRain from '@/components/transition/MatrixRain';
+
 const ocrFont = localFont({
   src: './fonts/OCRA.woff',
   variable: '--font-ocr',
@@ -45,12 +47,14 @@ export default function RootLayout({ children }) {
         <div className='crt-vignette'></div>
 
         {/* Main Content */}
-        <div className='mx-auto w-full max-w-4xl px-4 md:px-6 flex flex-col'>
-          <Header />
-          <NavWrap />
-          <main className='flex-1 w-full pb-8'>{children}</main>
-          <Footer />
-        </div>
+        <MatrixRain>
+          <div className='mx-auto w-full max-w-4xl px-4 md:px-6 flex flex-col'>
+            <Header />
+            <NavWrap />
+            <main className='flex-1 w-full pb-8'>{children}</main>
+            <Footer />
+          </div>
+        </MatrixRain>
       </body>
     </html>
   );
