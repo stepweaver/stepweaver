@@ -31,53 +31,52 @@ export default function GlitchButton({
     return () => clearInterval(blinkInterval);
   }, []);
 
-  // Common content rendering
   const buttonContent = (
-    <>
+    <div className='flex items-center justify-center'>
       {brackets && (
         <span
-          className={`${buttonStyles.bracketStart} ${
+          className={`text-terminal-green ${
             isHovering ? animStyles.glitchEffect : ''
           }`}
         >
           [
         </span>
       )}
-
       <span
-        className={`${buttonStyles.text} ${
+        className={`px-1 whitespace-nowrap text-terminal-text ${
           isHovering ? animStyles.textGlitchEffect : ''
         }`}
       >
         {isLoading ? loadingText || 'LOADING...' : children}
       </span>
-
       {brackets && (
         <span
-          className={`${buttonStyles.bracketEnd} ${
+          className={`text-terminal-green ${
             isHovering ? animStyles.glitchEffect : ''
           }`}
         >
           ]
         </span>
       )}
-
       {blockCursor && (
         <span
-          className={`${buttonStyles.cursor} ${
-            cursorVisible ? 'opacity-100' : 'opacity-0'
-          } ${styles.crtText}`}
+          className={`ml-0.5 ${cursorVisible ? 'opacity-100' : 'opacity-0'} ${
+            styles.crtText
+          } text-terminal-green`}
         >
           ▮
         </span>
       )}
-    </>
+    </div>
   );
 
+  // Keep the common props simple
   const commonProps = {
     onMouseEnter: () => setIsHovering(true),
     onMouseLeave: () => setIsHovering(false),
-    className: `${buttonStyles.glitchButton} ${className} font-ibm ${
+    className: `${
+      buttonStyles.glitchButton
+    } ${className} font-ibm flex items-center justify-center ${
       isHovering ? buttonStyles.scaleHover : buttonStyles.scaleNormal
     } ${disabled || isLoading ? 'opacity-70 cursor-not-allowed' : ''}`,
     disabled: disabled || isLoading,

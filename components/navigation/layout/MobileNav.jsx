@@ -21,11 +21,11 @@ export default function MobileNav() {
   ];
 
   return (
-    <div className='md:hidden fixed  right-4 z-50'>
+    <div className='md:hidden fixed right-4 z-50 backdrop-blur-md bg-terminal-bg/80'>
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className='cursor-pointer p-3 text-2xl text-terminal-green'
+          className='cursor-pointer p-3 text-3xl text-terminal-green'
           aria-expanded={isOpen}
           aria-label='Toggle navigation menu'
         >
@@ -34,19 +34,19 @@ export default function MobileNav() {
       )}
 
       {isOpen && (
-        <div className='fixed top-6 right-4 w-48 terminal-dark'>
+        <div className='fixed top-6 right-4 w-56 terminal-dark'>
           <div className='terminal-header'>
-            <div className='text-lg font-ibm text-terminal-green'>~/menu</div>
+            <div className='text-xl font-ibm text-terminal-green'>~/menu</div>
 
             <div
               className='terminal-button bg-terminal-red cursor-pointer'
               onClick={() => setIsOpen(false)}
             ></div>
           </div>
-          <div className='p-3'>
-            <ul className='py-2 font-ibm'>
+          <div className='p-6 text-xl'>
+            <ul className='py-3 font-ibm'>
               {navLinks.map((item) => (
-                <li key={item.path} className='px-4 py-2'>
+                <li key={item.path} className='px-4 py-3'>
                   <Link
                     href={item.path}
                     onClick={() => setIsOpen(false)}

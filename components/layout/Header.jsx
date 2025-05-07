@@ -46,7 +46,7 @@ export default function Header() {
   return (
     <header className='py-4 border-b border-terminal-border/30'>
       <div className='flex flex-col space-y-2'>
-        <p className='font-ibm text-2xl flex items-center'>
+        <p className='font-ibm text-2xl flex flex-wrap items-center'>
           <span
             className={`lambda-symbol mr-1 ${
               isGlitching ? 'lambda-glitching animate-glitch' : 'lambda-normal'
@@ -55,7 +55,9 @@ export default function Header() {
             λ
           </span>
           <span className='text-terminal-green'>stepweaver</span>
-          <span className='text-terminal-green'>{formatPath()}</span>
+          <span className='text-terminal-green w-full md:w-auto md:ml-0'>
+            {formatPath()}
+          </span>
           <span className='ml-1 text-terminal-green animate-blink'>_</span>
         </p>
         <div className='flex flex-col md:flex-row md:items-center md:justify-center justify-between gap-6 mt-3'>
@@ -69,8 +71,8 @@ export default function Header() {
           </div>
 
           {/* Profile Image */}
-          <div className='mt-4 md:mt-0'>
-            <div className='mx-auto block rounded-full border-2 border-terminal-green w-52 h-52 overflow-hidden'>
+          <div className='mt-4 md:mt-0 flex justify-center md:justify-start'>
+            <div className='rounded-full border-2 border-terminal-green w-52 h-52 overflow-hidden'>
               {imageError ? (
                 <div className='text-terminal-green text-4xl font-ibm'>SW</div>
               ) : (
