@@ -100,7 +100,7 @@ export default function Post({
   const hashtagStyle = getHashtagStyle(type);
 
   return (
-    <article className='max-w-2xl px-2 bg-terminal/20'>
+    <article className='max-w-3xl px-2 bg-terminal/20'>
       <header className='mb-6'>
         <h1 className='text-3xl text-terminal-green mb-2 font-ibm'>{title}</h1>
         {date && <p className='text-terminal-dimmed text-sm mb-2'>[{date}]</p>}

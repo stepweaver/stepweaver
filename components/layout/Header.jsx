@@ -45,47 +45,54 @@ export default function Header() {
 
   return (
     <header className='py-4 border-b border-terminal-border/30'>
-      <div className='flex flex-col space-y-2'>
-        <p className='font-ibm text-2xl flex flex-wrap items-center'>
-          <span
-            className={`lambda-symbol mr-1 ${
-              isGlitching ? 'lambda-glitching animate-glitch' : 'lambda-normal'
-            }`}
-          >
-            λ
-          </span>
-          <span className='text-terminal-green'>stepweaver</span>
-          <span className='text-terminal-green w-full md:w-auto md:ml-0'>
-            {formatPath()}
-          </span>
-          <span className='ml-1 text-terminal-green animate-blink'>_</span>
-        </p>
-        <div className='flex flex-col md:flex-row md:items-center md:justify-center justify-between gap-6 mt-3'>
-          <div className='text-center md:text-left'>
-            <h1 className='text-3xl text-terminal-text font-ibm tracking-tight'>
-              Stephen Weaver
-            </h1>
-            <h2 className='text-lg mt-1 text-terminal-muted font-ibm'>
-              {getSubtitle()}
-            </h2>
+      <div className='container mx-auto px-4 max-w-4xl'>
+        <div className='flex flex-col space-y-2'>
+          <div className='font-ibm text-2xl flex flex-wrap items-center justify-center md:justify-start'>
+            <span
+              className={`lambda-symbol mr-1 ${
+                isGlitching
+                  ? 'lambda-glitching animate-glitch'
+                  : 'lambda-normal'
+              }`}
+            >
+              λ
+            </span>
+            <span className='text-terminal-green'>stepweaver</span>
+            <span className='text-terminal-green break-all md:break-normal ml-0 md:ml-0'>
+              {formatPath()}
+            </span>
+            <span className='ml-1 text-terminal-green animate-blink'>_</span>
           </div>
 
-          {/* Profile Image */}
-          <div className='mt-4 md:mt-0 flex justify-center md:justify-start'>
-            <div className='rounded-full border-2 border-terminal-green w-52 h-52 overflow-hidden'>
-              {imageError ? (
-                <div className='text-terminal-green text-4xl font-ibm'>SW</div>
-              ) : (
-                <Image
-                  src='/images/pixarMe.png'
-                  alt='Stephen Weaver'
-                  width={200}
-                  height={200}
-                  priority={true}
-                  className='w-full h-full object-cover'
-                  onError={() => setImageError(true)}
-                />
-              )}
+          <div className='flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-6 mt-3'>
+            <div className='text-center md:text-left'>
+              <h1 className='text-3xl text-terminal-text font-ibm tracking-tight'>
+                Stephen Weaver
+              </h1>
+              <h2 className='text-lg mt-1 text-terminal-muted font-ibm'>
+                {getSubtitle()}
+              </h2>
+            </div>
+
+            {/* Profile Image */}
+            <div className='mt-4 md:mt-0 flex justify-center'>
+              <div className='rounded-full border-2 border-terminal-green w-52 h-52 overflow-hidden'>
+                {imageError ? (
+                  <div className='flex items-center justify-center h-full text-terminal-green text-4xl font-ibm'>
+                    SW
+                  </div>
+                ) : (
+                  <Image
+                    src='/images/pixarMe.png'
+                    alt='Stephen Weaver'
+                    width={200}
+                    height={200}
+                    priority={true}
+                    className='w-full h-full object-cover'
+                    onError={() => setImageError(true)}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
