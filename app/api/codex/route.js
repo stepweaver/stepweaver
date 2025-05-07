@@ -84,6 +84,46 @@ export async function GET() {
       }
     });
   }
+  // Article posts
+  const articleDir = path.join(process.cwd(), 'content', 'article');
+  if (fs.existsSync(articleDir)) {
+    const files = fs.readdirSync(articleDir);
+    files.forEach((file) => {
+      if (file.endsWith('.mdx')) {
+        const filePath = path.join(articleDir, file);
+        const source = fs.readFileSync(filePath, 'utf8');
+        const { data } = matter(source);
+        posts.push({
+          type: 'article',
+          title: data.title,
+          slug: file.replace(/\.mdx$/, ''),
+          date: data.date,
+          description: data.excerpt,
+          hashtags: data.hashtags || [],
+        });
+      }
+    });
+  }
+  // Tool posts
+  const ToolDir = path.join(process.cwd(), 'content', 'tool');
+  if (fs.existsSync(ToolDir)) {
+    const files = fs.readdirSync(ToolDir);
+    files.forEach((file) => {
+      if (file.endsWith('.mdx')) {
+        const filePath = path.join(ToolDir, file);
+        const source = fs.readFileSync(filePath, 'utf8');
+        const { data } = matter(source);
+        posts.push({
+          type: 'tool',
+          title: data.title,
+          slug: file.replace(/\.mdx$/, ''),
+          date: data.date,
+          description: data.excerpt,
+          hashtags: data.hashtags || [],
+        });
+      }
+    });
+  }
   // Sort posts by date descending
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
   return Response.json(posts);
