@@ -6,8 +6,15 @@ import PostCard from '@/components/ui/PostCard';
 import TypeTagButton from '@/components/ui/TypeTagButton';
 
 export default function CodexPage() {
+  // Initialize with empty params, then update with actual values after hydration
+  const [hasInitialized, setHasInitialized] = useState(false);
   const searchParams = useSearchParams();
-  const tagParam = searchParams.get('tag');
+  const tagParam = searchParams ? searchParams.get('tag') : null;
+
+  // Track when the component has fully hydrated
+  useEffect(() => {
+    setHasInitialized(true);
+  }, []);
 
   // State for filters
   const [activeTypeFilter, setActiveTypeFilter] = useState('all');
@@ -68,11 +75,11 @@ export default function CodexPage() {
   // Only set activeHashtags from tagParam on initial load
   const initializedFromUrl = useRef(false);
   useEffect(() => {
-    if (tagParam && !initializedFromUrl.current) {
+    if (tagParam && hasInitialized && !initializedFromUrl.current) {
       setActiveHashtags([tagParam]);
       initializedFromUrl.current = true;
     }
-  }, [tagParam]);
+  }, [tagParam, hasInitialized]);
 
   // Reference for scrolling to tag filter section when arriving with a tag parameter
   const tagFilterRef = useRef(null);
