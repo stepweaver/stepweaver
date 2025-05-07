@@ -129,18 +129,18 @@ export const handleCommand = async (command, currentPath, setCurrentPath) => {
   switch (mainCommand) {
     case 'help':
       return [
-        '<span class="text-terminal-green">Available commands:</span>',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">help</span><span class="text-terminal-yellow">|</span> Show this message',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">clear</span><span class="text-terminal-yellow">|</span> Clear the terminal',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">cd</span><span class="text-terminal-yellow">|</span> Change directory <span class="text-terminal-cyan">(cd about, cd codex, etc)</span>',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">weather</span><span class="text-terminal-yellow">|</span> Show the weather <span class="text-terminal-cyan">(weather [location])</span>',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">sudo</span><span class="text-terminal-yellow">|</span> Attempt to gain admin privileges',
+        '<span class="text-terminal-cyan font-bold">━━━ System Commands ━━━</span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">help</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show this message</span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">clear</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Clear the terminal</span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">cd</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Change directory <span class="text-terminal-cyan">(cd about, cd codex, etc)</span></span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">weather</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show the weather <span class="text-terminal-cyan">(weather [location])</span></span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">sudo</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Attempt to gain admin privileges</span>',
         '',
-        '<span class="text-terminal-cyan" style="font-weight:bold">━━━ Categories ━━━</span>',
-        '<span class="text-terminal-green" style="display:inline-block;width:110px;">movies</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-white">Quotes from cinematic universes</span>',
-        '<span class="text-terminal-cyan" style="display:inline-block;width:110px;">wisdom</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-white">Words of wisdom from various sources</span>',
-        '<span class="text-terminal-yellow" style="display:inline-block;width:110px;">jokes</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-white">Humor modules for entertainment</span>',
-        '<span class="text-terminal-red" style="display:inline-block;width:110px;">games</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-white">Interactive games to play</span>',
+        '<span class="text-terminal-cyan font-bold">━━━ Categories ━━━</span>',
+        '<span class="text-terminal-green inline-block min-w-[70px] max-w-[90px]">movies</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Movie quotes</span>',
+        '<span class="text-terminal-cyan inline-block min-w-[70px] max-w-[90px]">wisdom</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Wisdom quotes</span>',
+        '<span class="text-terminal-yellow inline-block min-w-[70px] max-w-[90px]">jokes</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Jokes</span>',
+        '<span class="text-terminal-red inline-block min-w-[70px] max-w-[90px]">games</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Games to play</span>',
       ];
     case 'games':
       return [
