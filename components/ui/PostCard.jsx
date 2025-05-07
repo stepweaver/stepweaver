@@ -31,6 +31,25 @@ export default function PostCard({ type, content, onTagClick }) {
     }
   };
 
+  const getHashtagGlowStyle = (type) => {
+    switch (type) {
+      case 'blog':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-green)]';
+      case 'podcast':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-purple)]';
+      case 'website':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-yellow)]';
+      case 'article':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-red)]';
+      case 'tool':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-blue)]';
+      case 'project':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-magenta)]';
+      default:
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-green)]';
+    }
+  };
+
   return (
     <div
       className={`border-l-2 p-3 mb-4 bg-terminal/20 ${typeStyles[type] || ''}`}
@@ -57,9 +76,9 @@ export default function PostCard({ type, content, onTagClick }) {
         {content.hashtags?.map((tag) => (
           <span
             key={tag}
-            className={`text-sm cursor-pointer hover:text-terminal-text ${
+            className={`text-sm cursor-pointer transition-all duration-200 ${
               typeStyles[type]?.split(' ')[1] || ''
-            }`}
+            } ${getHashtagGlowStyle(type)}`}
             onClick={(e) => {
               e.preventDefault();
               onTagClick && onTagClick(tag);

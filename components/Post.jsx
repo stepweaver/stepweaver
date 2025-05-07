@@ -77,6 +77,25 @@ export default function Post({
     }
   };
 
+  const getHashtagGlowStyle = (postType) => {
+    switch (postType) {
+      case 'blog':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-green)]';
+      case 'podcast':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-purple)]';
+      case 'website':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-yellow)]';
+      case 'article':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-red)]';
+      case 'tool':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-blue)]';
+      case 'project':
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-magenta)]';
+      default:
+        return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-green)]';
+    }
+  };
+
   const typeInfo = getTypeInfo(type);
   const hashtagStyle = getHashtagStyle(type);
 
@@ -92,7 +111,10 @@ export default function Post({
               <a
                 key={index}
                 href={`/codex?tag=${encodeURIComponent(tag)}`}
-                className={`text-sm ${hashtagStyle} cursor-pointer hover:text-terminal-text`}
+                className={`
+                  text-sm ${hashtagStyle} cursor-pointer transition-all duration-200
+                  ${getHashtagGlowStyle(type)}
+                `}
               >
                 #{tag}
               </a>

@@ -70,7 +70,7 @@ export default function Header() {
 
           {/* Profile Image */}
           <div className='mt-4 md:mt-0'>
-            <div className='w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-terminal-green bg-terminal flex items-center justify-center shadow-[0_0_8px_rgba(0,255,65,0.3)]'>
+            <div className='mx-auto block rounded-full border-2 border-terminal-green w-52 h-52 overflow-hidden'>
               {imageError ? (
                 <div className='text-terminal-green text-4xl font-ibm'>SW</div>
               ) : (
