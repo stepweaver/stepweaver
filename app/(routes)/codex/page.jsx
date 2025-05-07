@@ -194,7 +194,7 @@ export default function CodexPage() {
             <div className='flex flex-wrap gap-2 justify-center mx-auto max-w-4xl'>
               {allHashtags.map((tag) => {
                 const isSelected = activeHashtags.includes(tag);
-                const isPulsing = tagParam === tag && isSelected;
+                const isPulsing = isSelected;
 
                 return (
                   <button
