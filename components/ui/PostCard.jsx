@@ -64,7 +64,10 @@ export default function PostCard({ type, content, onTagClick }) {
         >
           <Link
             href={getPostUrl()}
-            className={`transition-colors duration-150 hover:underline hover:text-terminal-yellow focus:text-terminal-yellow`}
+            className={`
+              transition-colors duration-150 hover:underline
+              ${getHashtagGlowStyle(type)}
+            `}
           >
             {content.title}
           </Link>

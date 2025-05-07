@@ -44,6 +44,46 @@ export async function GET() {
       }
     });
   }
+  // Website posts
+  const websiteDir = path.join(process.cwd(), 'content', 'website');
+  if (fs.existsSync(websiteDir)) {
+    const files = fs.readdirSync(websiteDir);
+    files.forEach((file) => {
+      if (file.endsWith('.mdx')) {
+        const filePath = path.join(websiteDir, file);
+        const source = fs.readFileSync(filePath, 'utf8');
+        const { data } = matter(source);
+        posts.push({
+          type: 'website',
+          title: data.title,
+          slug: file.replace(/\.mdx$/, ''),
+          date: data.date,
+          description: data.excerpt,
+          hashtags: data.hashtags || [],
+        });
+      }
+    });
+  }
+  // Project posts
+  const projectDir = path.join(process.cwd(), 'content', 'project');
+  if (fs.existsSync(projectDir)) {
+    const files = fs.readdirSync(projectDir);
+    files.forEach((file) => {
+      if (file.endsWith('.mdx')) {
+        const filePath = path.join(projectDir, file);
+        const source = fs.readFileSync(filePath, 'utf8');
+        const { data } = matter(source);
+        posts.push({
+          type: 'project',
+          title: data.title,
+          slug: file.replace(/\.mdx$/, ''),
+          date: data.date,
+          description: data.excerpt,
+          hashtags: data.hashtags || [],
+        });
+      }
+    });
+  }
   // Sort posts by date descending
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
   return Response.json(posts);
