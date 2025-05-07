@@ -1,19 +1,18 @@
 'use client';
 
 import { useEffect, useState, useMemo, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import PostCard from '@/components/ui/PostCard';
 import TypeTagButton from '@/components/ui/TypeTagButton';
 
 export default function CodexPage() {
-  // Initialize with empty params, then update with actual values after hydration
-  const [hasInitialized, setHasInitialized] = useState(false);
-  const searchParams = useSearchParams();
-  const tagParam = searchParams ? searchParams.get('tag') : null;
+  const router = useRouter();
+  const [tagParam, setTagParam] = useState(null);
 
-  // Track when the component has fully hydrated
+  // Get search params on client side
   useEffect(() => {
-    setHasInitialized(true);
+    const params = new URLSearchParams(window.location.search);
+    setTagParam(params.get('tag'));
   }, []);
 
   // State for filters
@@ -75,11 +74,11 @@ export default function CodexPage() {
   // Only set activeHashtags from tagParam on initial load
   const initializedFromUrl = useRef(false);
   useEffect(() => {
-    if (tagParam && hasInitialized && !initializedFromUrl.current) {
+    if (tagParam && !initializedFromUrl.current) {
       setActiveHashtags([tagParam]);
       initializedFromUrl.current = true;
     }
-  }, [tagParam, hasInitialized]);
+  }, [tagParam]);
 
   // Reference for scrolling to tag filter section when arriving with a tag parameter
   const tagFilterRef = useRef(null);
