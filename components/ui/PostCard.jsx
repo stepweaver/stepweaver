@@ -52,7 +52,9 @@ export default function PostCard({ type, content, onTagClick }) {
 
   return (
     <div
-      className={`border-l-2 p-3 mb-4 bg-terminal/20 ${typeStyles[type] || ''}`}
+      className={`border-l-2 pl-3 mb-4 bg-terminal/20 ${
+        typeStyles[type] || ''
+      }`}
     >
       <div className='flex justify-between items-start'>
         <h3
