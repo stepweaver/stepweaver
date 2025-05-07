@@ -47,21 +47,23 @@ export default function Header() {
     <header className='py-4 border-b border-terminal-border/30'>
       <div className='container mx-auto px-4 max-w-4xl'>
         <div className='flex flex-col space-y-2'>
-          <div className='font-ibm text-2xl flex flex-wrap items-center justify-center md:justify-start'>
-            <span
-              className={`lambda-symbol mr-1 ${
-                isGlitching
-                  ? 'lambda-glitching animate-glitch'
-                  : 'lambda-normal'
-              }`}
-            >
-              λ
-            </span>
-            <span className='text-terminal-green'>stepweaver</span>
-            <span className='text-terminal-green break-all md:break-normal ml-0 md:ml-0'>
-              {formatPath()}
-            </span>
-            <span className='ml-1 text-terminal-green animate-blink'>_</span>
+          <div className='w-full overflow-x-auto'>
+            <div className='font-ibm text-2xl flex items-center justify-center md:justify-start whitespace-nowrap overflow-hidden w-full'>
+              <span
+                className={`lambda-symbol mr-1 ${
+                  isGlitching
+                    ? 'lambda-glitching animate-glitch'
+                    : 'lambda-normal'
+                }`}
+              >
+                λ
+              </span>
+              <span className='text-terminal-green'>stepweaver</span>
+              <span className='text-terminal-green break-all md:break-normal ml-0 md:ml-0 truncate max-w-[40vw] sm:max-w-[60vw]'>
+                {formatPath()}
+              </span>
+              <span className='ml-1 text-terminal-green animate-blink'>_</span>
+            </div>
           </div>
 
           <div className='flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-6 mt-3'>
