@@ -4,6 +4,8 @@ import NavWrap from '@/components/navigation/layout/NavWrap';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MatrixRain from '@/components/transition/MatrixRain';
+import { DefaultSeo } from 'next-seo';
+import SEO from '../next-seo.config';
 
 const ocrFont = localFont({
   src: './fonts/OCRA.woff',
@@ -40,6 +42,9 @@ export default function RootLayout({ children }) {
       lang='en'
       className={`${ocrFont.variable} ${ibm3270.variable} antialiased suppressHydrationWarning`}
     >
+      <head>
+        <meta name='theme-color' content='#0d1211' />
+      </head>
       <body className='w-full min-h-screen flex flex-col'>
         {/* CRT Effect */}
         <div className='crt-background'></div>
