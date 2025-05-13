@@ -49,6 +49,43 @@ module.exports = {
           '80%': { transform: 'skewX(-2deg)' },
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: 'var(--color-terminal-text)',
+            p: {
+              marginTop: '1.5em',
+              marginBottom: '1.5em',
+              lineHeight: '1.7',
+            },
+            'p + p': {
+              marginTop: '2em',
+            },
+            a: {
+              color: 'var(--color-terminal-yellow)',
+              '&:hover': {
+                color: 'var(--color-terminal-green)',
+              },
+            },
+            h1: {
+              color: 'var(--color-terminal-green)',
+              marginTop: '2em',
+              marginBottom: '1em',
+            },
+            h2: {
+              color: 'var(--color-terminal-green)',
+              marginTop: '1.75em',
+              marginBottom: '0.75em',
+            },
+            h3: {
+              color: 'var(--color-terminal-green)',
+              marginTop: '1.5em',
+              marginBottom: '0.5em',
+            },
+          },
+        },
+      },
     },
   },
+  plugins: [require('@tailwindcss/typography')],
 };

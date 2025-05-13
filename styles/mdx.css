@@ -1,0 +1,56 @@
+/* Paragraphs - basic spacing */
+.prose p {
+  margin-top: 1.5rem;
+}
+
+/* Headings - clear hierarchy */
+.prose h1 {
+  font-size: 1.8rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Links - make them stand out */
+.prose a {
+  color: #00ff00;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  color: #ff00ff;
+  text-decoration: underline;
+}
+
+/* Lists - basic indentation */
+.prose ul,
+.prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+/* Code blocks - distinguish from regular text */
+.prose code {
+  background-color: #f0f0f0;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.25rem;
+}
+
+/* Blockquotes - visual distinction */
+.prose blockquote {
+  border-left: 3px solid #e2e8f0;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1rem;
+}

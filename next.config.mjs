@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Add this setting to improve hydration
+  // Only need basic configuration for Next.js
+  // next-mdx-remote doesn't require special config
   reactStrictMode: true,
 };
 

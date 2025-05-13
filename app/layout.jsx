@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 import './globals.css';
+import '../styles/mdx.css';
 import NavWrap from '@/components/navigation/layout/NavWrap';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';

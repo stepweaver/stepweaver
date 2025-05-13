@@ -124,7 +124,9 @@ export default function Post({
       </header>
 
       <div className='w-full border-b border-dashed border-terminal-dimmed'></div>
-      <section className='text-terminal-text'>{children}</section>
+      <section className='prose prose-invert prose-p:my-6 prose-p:leading-relaxed prose-headings:mt-8 prose-headings:mb-4 max-w-none text-terminal-text'>
+        {children}
+      </section>
     </article>
   );
 }

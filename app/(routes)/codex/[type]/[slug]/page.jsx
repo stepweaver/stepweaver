@@ -1,24 +1,22 @@
-import { compile, run } from '@mdx-js/mdx';
-import * as runtime from 'react/jsx-runtime';
 import fs from 'fs/promises';
 import path from 'path';
+import { MDXRemote } from 'next-mdx-remote/rsc';
 import matter from 'gray-matter';
 import Post from '@/components/Post';
 
 const postComponents = {
   blog: Post,
   podcast: Post,
+  website: Post,
   // project: Post,
-  // website: Post,
   // tool: Post,
   // book: Post,
 };
 
 export default async function Page({ params }) {
-  const awaitedParams = await params;
-  const { type, slug } = awaitedParams;
+  const resolvedParams = await params;
+  const { type, slug } = resolvedParams;
 
-  // Build the path to the MDX file in /content/{type}/{slug}.mdx
   const filePath = path.join(process.cwd(), 'content', type, `${slug}.mdx`);
 
   let mdxSource;
@@ -28,19 +26,8 @@ export default async function Page({ params }) {
     return <div>Post not found</div>;
   }
 
-  // Parse frontmatter
   const { content, data: frontmatter } = matter(mdxSource);
 
-  // Compile and run MDX content (without frontmatter)
-  const code = String(
-    await compile(content, { outputFormat: 'function-body' })
-  );
-  const { default: Content } = await run(code, {
-    ...runtime,
-    baseUrl: import.meta.url,
-  });
-
-  // Pick the right component, default to Post if not found
   const PostComponent = postComponents[type] || Post;
 
   return (
@@ -52,7 +39,9 @@ export default async function Page({ params }) {
         excerpt={frontmatter.excerpt}
         hashtags={frontmatter.hashtags}
       >
-        <Content />
+        <div className='prose prose-invert max-w-none'>
+          <MDXRemote source={content} />
+        </div>
       </PostComponent>
     </div>
   );
