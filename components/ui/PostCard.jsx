@@ -56,7 +56,7 @@ export default function PostCard({ type, content, onTagClick }) {
         typeStyles[type] || ''
       }`}
     >
-      <div className='flex justify-between items-start'>
+      <div className='sm:flex sm:justify-between sm:items-start'>
         <h3
           className={`font-ibm text-lg ${
             typeStyles[type]?.split(' ')[1] || ''
@@ -72,11 +72,14 @@ export default function PostCard({ type, content, onTagClick }) {
             {content.title}
           </Link>
         </h3>
-        <span className='text-terminal-dimmed text-sm'>
+        <span className='hidden sm:block text-terminal-dimmed text-sm whitespace-nowrap flex-shrink-0 ml-4'>
           {formatDate(content.date)}
         </span>
       </div>
-      <p className='text-terminal-text mt-2 mb-3'>{content.description}</p>
+      <p className='text-terminal-text mt-2 mb-2'>{content.description}</p>
+      <span className='block sm:hidden text-terminal-dimmed text-sm whitespace-nowrap mb-3'>
+        {formatDate(content.date)}
+      </span>
       <div className='flex flex-wrap gap-2'>
         {content.hashtags?.map((tag) => (
           <span
