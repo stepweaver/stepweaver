@@ -1,26 +1,21 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { handleCommand } from './commands';
-import * as zorkGame from './zork';
 import { useCommandHistory } from './hooks/useCommandHistory';
 import { useRouter } from 'next/navigation';
 import styles from '../../styles/terminal.module.css';
 
 // Utility functions for command processing
-const handleClearCommand = (
-  welcomeMessages,
-  setLines,
-  setInput,
-  inZorkMode
-) => {
-  if (inZorkMode) {
-    // In Zork mode, just clear lines but don't show welcome message
-    setLines([]);
-  } else {
-    // Normal clear behavior
-    setLines([...welcomeMessages]);
-  }
+const handleClearCommand = (welcomeMessages, setLines, setInput) => {
+  // Normal clear behavior
+  setLines([...welcomeMessages]);
   setInput('');
 };
 
@@ -81,7 +76,7 @@ const updateRegularOutput = (output, setLines) => {
   setLines((prev) => [...prev, ...output]);
 };
 
-const Terminal = () => {
+const Terminal = forwardRef((props, ref) => {
   // Define welcome messages as a constant so we can reuse it
   const welcomeMessages = [
     'Welcome to stepweaver terminolio v1.0.0 - A terminal-inspired portfolio and blog.',
@@ -96,6 +91,9 @@ const Terminal = () => {
   const containerRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
+  const [syncCallback, setSyncCallback] = useState(null);
+  const [lastCommand, setLastCommand] = useState('');
+  const [lastCommandTime, setLastCommandTime] = useState(0);
 
   const {
     history,
@@ -105,8 +103,35 @@ const Terminal = () => {
     navigateHistory,
   } = useCommandHistory();
 
-  // Use the Zork module's state instead of local state
-  const [forceUpdate, setForceUpdate] = useState(0);
+  // Expose methods to parent components
+  useImperativeHandle(ref, () => ({
+    // Execute a command programmatically
+    executeCommand: (cmd) => {
+      processCommand(cmd);
+    },
+
+    // Set a callback function to sync filter state with UI
+    setSyncCallback: (callback) => {
+      setSyncCallback(callback);
+    },
+
+    // Update filters from UI
+    updateFilters: ({ type, tags }) => {
+      // For future implementation
+      if (type) {
+        if (type === 'all') {
+          processCommand('codex all');
+        } else {
+          processCommand(`codex ${type}`);
+        }
+      }
+
+      if (tags && tags.length > 0) {
+        // Process only the first tag for now
+        processCommand(`filter ${tags[0]}`);
+      }
+    },
+  }));
 
   // Scroll to bottom when lines change
   useEffect(() => {
@@ -126,27 +151,23 @@ const Terminal = () => {
   }, []);
 
   const processCommand = async (command) => {
-    // Special behavior for Zork mode tracking
-    if (command.trim().toLowerCase() === 'zork-start') {
-      // Force re-render when Zork state changes
-      setForceUpdate((prev) => prev + 1);
-    } else if (zorkGame.inZorkMode && command.trim().toLowerCase() === 'quit') {
-      // Force re-render when Zork state changes
-      setForceUpdate((prev) => prev + 1);
-    }
-
     if (command.trim()) {
+      // Check for duplicate rapid commands (prevents double execution)
+      const now = Date.now();
+      if (command === lastCommand && now - lastCommandTime < 500) {
+        return; // Skip if same command executed within 500ms
+      }
+
+      // Update command tracking
+      setLastCommand(command);
+      setLastCommandTime(now);
+
       addToHistory(command);
     }
 
     // Special handling for clear command
     if (command.trim().toLowerCase() === 'clear') {
-      handleClearCommand(
-        welcomeMessages,
-        setLines,
-        setInput,
-        zorkGame.inZorkMode
-      );
+      handleClearCommand(welcomeMessages, setLines, setInput);
       return;
     }
 
@@ -176,7 +197,12 @@ const Terminal = () => {
     }
 
     // Execute the command
-    const output = await handleCommand(command, currentPath, setCurrentPath);
+    const output = await handleCommand(
+      command,
+      currentPath,
+      setCurrentPath,
+      syncCallback
+    );
 
     // If it was a weather command, replace the loading line with the actual output
     if (cmd.startsWith('weather')) {
@@ -262,13 +288,26 @@ const Terminal = () => {
     inputRef.current?.focus();
   };
 
+  // Add handler for clicking on elements with data-open attribute
+  const handleContentClick = (e) => {
+    // Find closest element with data-open attribute
+    const target = e.target.closest('[data-open]');
+    if (target) {
+      const path = target.getAttribute('data-open');
+      if (path) {
+        // Navigate to the path
+        router.push(`/${path}`);
+      }
+    }
+  };
+
   return (
     <div
       ref={containerRef}
       className={`h-64 sm:h-80 md:h-96 overflow-y-auto p-2 sm:p-4 text-sm sm:text-md text-terminal-text font-ibm leading-tight cursor-text ${styles.scrollbarHide} ${styles.crtTerminal} ${styles.crtEffect}`}
       onClick={focusInput}
     >
-      <div className='terminal-output mb-4'>
+      <div className='terminal-output mb-4' onClick={handleContentClick}>
         {lines.map((line, i) => (
           <div key={i} className='mb-0.5'>
             {line.startsWith('λ ') ? (
@@ -302,15 +341,9 @@ const Terminal = () => {
         ))}
       </div>
       <div className='terminal-prompt'>
-        {zorkGame.inZorkMode ? (
-          <div className={`text-terminal-yellow mb-1 ${styles.crtText}`}>
-            <span className='text-terminal-green'>ZORK</span> &gt;
-          </div>
-        ) : (
-          <div className={`text-terminal-green mb-1 ${styles.crtText}`}>
-            user@stepweaver.dev {currentPath}
-          </div>
-        )}
+        <div className={`text-terminal-green mb-1 ${styles.crtText}`}>
+          user@stepweaver.dev {currentPath}
+        </div>
         <div className='flex items-center'>
           <span
             className={`text-terminal-green text-xs inline-block mr-1 ${styles.crtText}`}
@@ -358,6 +391,6 @@ const Terminal = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Terminal;

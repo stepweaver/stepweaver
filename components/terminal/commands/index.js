@@ -1,9 +1,200 @@
-import { quotes } from '../data/quotes';
-import { jokes } from '../data/jokes';
 import { fileSystem } from '../data/fileSystem';
 import { weatherArt } from '../data/weatherArt';
-// Import the Zork game module
-import * as zorkGame from '../zork';
+
+// Cache for content data to avoid repeated fetching
+let contentCache = null;
+let contentLastFetched = 0;
+let syncCallback = null;
+
+// Function to fetch content from the API
+const fetchContent = async () => {
+  // Check if we have a recent cache (less than 5 minutes old)
+  const now = Date.now();
+  if (contentCache && now - contentLastFetched < 300000) {
+    return contentCache;
+  }
+
+  try {
+    const response = await fetch('/api/codex');
+    const data = await response.json();
+
+    // Update cache
+    contentCache = data;
+    contentLastFetched = now;
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching content:', error);
+    return [];
+  }
+};
+
+// Format a content item for terminal display
+const formatContentItem = (item, index) => {
+  // Format date as [YYYY-MMM-DD]
+  const date = new Date(item.date);
+  const formattedDate = `[${date.getFullYear()}-${date.toLocaleString('en-US', {
+    month: 'short',
+  })}-${String(date.getDate()).padStart(2, '0')}]`;
+
+  // Get color based on content type
+  let typeColor;
+  switch (item.type) {
+    case 'blog':
+      typeColor = 'text-terminal-green';
+      break;
+    case 'project':
+      typeColor = 'text-terminal-pink';
+      break;
+    case 'podcast':
+      typeColor = 'text-terminal-purple';
+      break;
+    case 'article':
+      typeColor = 'text-terminal-red';
+      break;
+    case 'tool':
+      typeColor = 'text-terminal-blue';
+      break;
+    case 'website':
+      typeColor = 'text-terminal-yellow';
+      break;
+    default:
+      typeColor = 'text-terminal-white';
+  }
+
+  // Truncate description if needed
+  const maxDescLength = 60;
+  let description = item.description || '';
+  const truncatedDesc =
+    description.length > maxDescLength
+      ? description.substring(0, maxDescLength) + '...'
+      : description;
+
+  // Create the navigation path for the content item
+  const navigationPath = `codex/${item.type}/${item.slug}`;
+
+  return `<span class="flex mb-1">
+    <span class="${typeColor} cursor-pointer hover:underline" data-open="${navigationPath}">${item.title}</span>
+    <span class="mx-2 text-terminal-dimmed">-</span>
+    <span class="text-terminal-text">${truncatedDesc}</span>
+    <span class="ml-auto text-terminal-dimmed text-xs">${formattedDate}</span>
+  </span>`;
+};
+
+// Helper function to get color based on content type
+const getTypeColor = (type) => {
+  switch (type) {
+    case 'blog':
+      return 'text-terminal-green';
+    case 'project':
+      return 'text-terminal-pink';
+    case 'podcast':
+      return 'text-terminal-purple';
+    case 'article':
+      return 'text-terminal-red';
+    case 'tool':
+      return 'text-terminal-blue';
+    case 'website':
+      return 'text-terminal-yellow';
+    default:
+      return 'text-terminal-yellow';
+  }
+};
+
+// Function to list content items by type
+const listContentByType = async (type) => {
+  const content = await fetchContent();
+
+  if (content.length === 0) {
+    return ['No content available in the database.'];
+  }
+
+  let filteredContent = content;
+
+  // Filter by type if provided
+  if (type && type !== 'all') {
+    filteredContent = content.filter((item) => item.type === type);
+
+    if (filteredContent.length === 0) {
+      const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+      const typeColor = getTypeColor(type);
+      return [
+        `<span class="text-terminal-cyan font-bold">━━━ ${typeLabel} Content ━━━</span>`,
+        `<span class="${typeColor}">No ${type} content available yet.</span>`,
+        `<span class="text-terminal-dimmed">Try another content type or "codex all" to see all content.</span>`,
+      ];
+    }
+  }
+
+  // Sort by date (newest first)
+  filteredContent.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Format output for terminal display
+  const output = [
+    `<span class="text-terminal-cyan font-bold">━━━ ${
+      type === 'all'
+        ? 'All Content'
+        : `${type.charAt(0).toUpperCase() + type.slice(1)} Content`
+    } ━━━</span>`,
+    `<span class="text-terminal-dimmed">Displaying all${
+      type !== 'all' ? ' ' + type : ''
+    } content.</span>`,
+    '',
+  ];
+
+  filteredContent.forEach((item, index) => {
+    output.push(formatContentItem(item, index + 1));
+  });
+
+  return output;
+};
+
+// Function to generate a content type submenu
+const getContentTypeMenu = async () => {
+  const content = await fetchContent();
+
+  if (content.length === 0) {
+    return ['No content available.'];
+  }
+
+  // Get unique content types and count items
+  const typeCounts = {};
+  content.forEach((item) => {
+    typeCounts[item.type] = (typeCounts[item.type] || 0) + 1;
+  });
+
+  // Format output for terminal display
+  const output = [
+    '<span class="text-terminal-cyan font-bold">━━━ Content Browser ━━━</span>',
+    '<span class="text-terminal-dimmed">Browse content by type or view all.</span>',
+    '',
+  ];
+
+  // Add the "all" option
+  output.push(
+    `<span><span class="text-terminal-green inline-block min-w-[90px]">all</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white cursor-pointer" data-cmd="codex all">All content (${content.length})</span></span>`
+  );
+
+  // Add each content type
+  Object.entries(typeCounts)
+    .sort()
+    .forEach(([type, count]) => {
+      const typeColor = getTypeColor(type);
+
+      output.push(
+        `<span><span class="${typeColor} inline-block min-w-[90px]">${type}</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white cursor-pointer" data-cmd="codex ${type}">${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } content (${count})</span></span>`
+      );
+    });
+
+  output.push('');
+  output.push(
+    '<span class="text-terminal-dimmed">Try: "codex all" or "codex blog"</span>'
+  );
+
+  return output;
+};
 
 // Function to fetch weather data
 const fetchWeather = async (location = 'new york') => {
@@ -81,45 +272,19 @@ const fetchWeather = async (location = 'new york') => {
   }
 };
 
-// Add a state variable to track if we're in Blackjack mode
-let inBlackjackMode = false;
-// Blackjack game state
-let blackjackGame = {
-  player: [],
-  dealer: [],
-  deck: [],
-  playerScore: 0,
-  dealerScore: 0,
-  playerTurn: true,
-  gameOver: false,
-  result: '',
-};
+export const handleCommand = async (
+  command,
+  currentPath,
+  setCurrentPath,
+  callback
+) => {
+  // Store callback if provided
+  if (callback) {
+    syncCallback = callback;
+  }
 
-// Add score values for specific items and actions
-const SCORE_VALUES = {
-  leaflet: 5,
-  window_open: 10,
-  leaves: 5,
-  grating_revealed: 15,
-  locations: {
-    clearing: 10,
-    behindHouse: 5,
-  },
-};
-
-export const handleCommand = async (command, currentPath, setCurrentPath) => {
   const cmd = command.trim();
   const lowerCmd = cmd.toLowerCase();
-
-  // Check if we're in Zork mode - if so, handle as Zork command
-  if (zorkGame.inZorkMode && cmd !== 'quit') {
-    return zorkGame.handleCommand(cmd);
-  }
-
-  // Check if we're in Blackjack mode - if so, handle as Blackjack command
-  if (inBlackjackMode && !['quit', 'exit'].includes(lowerCmd)) {
-    return handleBlackjackCommand(cmd);
-  }
 
   // Parse command and arguments
   const args = cmd.split(' ');
@@ -135,99 +300,10 @@ export const handleCommand = async (command, currentPath, setCurrentPath) => {
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">cd</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Change directory <span class="text-terminal-cyan">(cd about, cd codex, etc)</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">weather</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show the weather <span class="text-terminal-cyan">(weather [location])</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">sudo</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Attempt to gain admin privileges</span>',
-        '',
-        '<span class="text-terminal-cyan font-bold">━━━ Categories ━━━</span>',
-        '<span class="text-terminal-green inline-block min-w-[70px] max-w-[90px]">movies</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Movie quotes</span>',
-        '<span class="text-terminal-cyan inline-block min-w-[70px] max-w-[90px]">wisdom</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Wisdom quotes</span>',
-        '<span class="text-terminal-yellow inline-block min-w-[70px] max-w-[90px]">jokes</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Jokes</span>',
-        '<span class="text-terminal-red inline-block min-w-[70px] max-w-[90px]">games</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Games to play</span>',
-      ];
-    case 'games':
-      return [
-        '<span class="text-terminal-red" style="font-weight:bold">━━━ Available Games ━━━</span>',
-        '<span class="text-terminal-green" style="display:inline-block;width:110px;">zork</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-green">Classic text adventure game</span>',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">blackjack</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-blue">Card game of 21</span>',
-      ];
-    case 'movies':
-      return [
-        '<span class="text-terminal-green" style="font-weight:bold">━━━ Movie Quote Archives ━━━</span>',
-        '<span class="text-terminal-green" style="display:inline-block;width:110px;">matrix</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-green">Digital reality insights</span>',
-        '<span class="text-terminal-red" style="display:inline-block;width:110px;">terminator</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-red">Messages from the future</span>',
-        '<span class="text-terminal-red" style="display:inline-block;width:110px;">fightclub</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-red">Project Mayhem communications</span>',
-        '<span class="text-terminal-yellow" style="display:inline-block;width:110px;">starwars</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-yellow">Galactic wisdom</span>',
-        '<span class="text-terminal-green" style="display:inline-block;width:110px;">hitchhiker</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-green">Guide to the galaxy</span>',
-      ];
-    case 'wisdom':
-      return [
-        '<span class="text-terminal-cyan" style="font-weight:bold">━━━ Wisdom Archives ━━━</span>',
-        '<span class="text-terminal-cyan" style="display:inline-block;width:110px;">grandma</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-cyan">JP\'s robot ears wisdom</span>',
-        '<span class="text-terminal-green" style="display:inline-block;width:110px;">hitchhiker</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-green">Philosophical guidance for space travelers</span>',
-        '<span class="text-terminal-yellow" style="display:inline-block;width:110px;">starwars</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-yellow">Ancient wisdom from distant stars</span>',
-      ];
-    case 'jokes':
-      return [
-        '<span class="text-terminal-yellow" style="font-weight:bold">━━━ Humor Modules ━━━</span>',
-        '<span class="text-terminal-blue" style="display:inline-block;width:110px;">joke</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-blue">Programming humor protocol</span>',
-        '<span class="text-terminal-yellow" style="display:inline-block;width:110px;">dadjoke</span><span class="text-terminal-yellow">|</span> <span class="text-terminal-yellow">Paternal humor database</span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">codex</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Browse content by type</span>',
       ];
     case 'clear':
       return [];
-    case 'matrix':
-      return [
-        '<span class="text-terminal-green text-lg">' +
-          quotes.matrix[Math.floor(Math.random() * quotes.matrix.length)] +
-          '</span>',
-      ];
-    case 'terminator':
-      return [
-        '<span class="text-terminal-red text-lg">' +
-          quotes.terminator[
-            Math.floor(Math.random() * quotes.terminator.length)
-          ] +
-          '</span>',
-      ];
-    case 'grandma':
-      return [
-        '<span class="text-terminal-cyan text-lg">' +
-          quotes.grandma[Math.floor(Math.random() * quotes.grandma.length)] +
-          '</span>',
-      ];
-    case 'fightclub':
-      return [
-        '<span class="text-terminal-red text-lg">' +
-          quotes.fightclub[
-            Math.floor(Math.random() * quotes.fightclub.length)
-          ] +
-          '</span>',
-      ];
-    case 'starwars':
-      return [
-        '<span class="text-terminal-yellow text-lg">' +
-          quotes.starwars[Math.floor(Math.random() * quotes.starwars.length)] +
-          '</span>',
-      ];
-    case 'hitchhiker':
-      return [
-        '<span class="text-terminal-green text-lg">' +
-          quotes.hitchhiker[
-            Math.floor(Math.random() * quotes.hitchhiker.length)
-          ] +
-          '</span>',
-      ];
-    case 'joke':
-      return [
-        '<span class="text-terminal-blue text-lg">' +
-          jokes.programming[
-            Math.floor(Math.random() * jokes.programming.length)
-          ] +
-          '</span>',
-      ];
-    case 'dadjoke':
-      return [
-        '<span class="text-terminal-yellow text-lg">' +
-          jokes.dad[Math.floor(Math.random() * jokes.dad.length)] +
-          '</span>',
-      ];
     case 'weather':
       return await fetchWeather(arg || 'new york');
     case 'sudo':
@@ -237,53 +313,135 @@ export const handleCommand = async (command, currentPath, setCurrentPath) => {
       ];
     case 'cd':
       return handleCdCommand(arg, currentPath, setCurrentPath);
-    case 'zork':
-      return [
-        '<span class="text-terminal-yellow text-lg">ZORK</span>',
-        'Welcome to ZORK.',
-        "(Implementation inspired by DLzer's JavaScript Zork)",
-        'Original game © 1981, 1982, 1983 Infocom Inc. All rights reserved.',
-        '',
-        '<span class="text-terminal-yellow">Loading game...</span>',
-        '<span class="text-terminal-cyan">Type "zork-start" to begin your adventure</span>',
-      ];
-    case 'zork-start':
-      return zorkGame.startGame();
-    case 'zork-cmd':
-      if (!arg) {
-        return [
-          '<span class="text-terminal-red">Please enter a command after "zork-cmd" or use "zork-start" to enter Zork mode</span>',
+    case 'ls':
+      // Special handling for 'ls codex' and 'ls codex/type' commands from UI buttons
+      if (arg.startsWith('codex')) {
+        const parts = arg.split('/');
+        if (parts.length > 1 && parts[1]) {
+          // Format is 'ls codex/type' - display content filtered by type
+          return await listContentByType(parts[1]);
+        } else {
+          // Just 'ls codex' - show all content
+          return await listContentByType('all');
+        }
+      }
+      // Standard ls behavior for filesystem
+      return handleLsCommand(arg, currentPath);
+    case 'filter':
+      // Handle filter commands from tag buttons
+      if (arg) {
+        // For future implementation - filter by tag
+        const content = await fetchContent();
+
+        // Filter content by the specified tag
+        const filteredContent = content.filter(
+          (item) => item.hashtags && item.hashtags.includes(arg)
+        );
+
+        if (filteredContent.length === 0) {
+          return [
+            `<span class="text-terminal-cyan">No content found with tag "#${arg}"</span>`,
+            `<span class="text-terminal-dimmed">Try another tag or type "codex all" to see all content.</span>`,
+          ];
+        }
+
+        // Sort by date (newest first)
+        filteredContent.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Get most common content type for this tag (to determine color)
+        const typeCount = {};
+        filteredContent.forEach((item) => {
+          typeCount[item.type] = (typeCount[item.type] || 0) + 1;
+        });
+
+        // Get the most frequent type
+        let dominantType = 'default';
+        let maxCount = 0;
+        for (const [type, count] of Object.entries(typeCount)) {
+          if (count > maxCount) {
+            maxCount = count;
+            dominantType = type;
+          }
+        }
+
+        const tagColor = getTypeColor(dominantType);
+
+        // Format output for terminal display - single heading
+        const output = [
+          `<span class="${tagColor} font-bold">━━━ Content Tagged with #${arg} (${filteredContent.length} items) ━━━</span>`,
+          '',
         ];
+
+        filteredContent.forEach((item, index) => {
+          output.push(formatContentItem(item, index + 1));
+        });
+
+        // Notify any callback functions about the filter change
+        if (syncCallback) {
+          syncCallback({ tags: [arg] });
+        }
+
+        return output;
       }
-      return zorkGame.handleCommand(arg);
-    case 'blackjack':
-      return [
-        '<span class="text-terminal-blue text-lg">BLACKJACK</span>',
-        'The classic card game of 21.',
-        '',
-        '<span class="text-terminal-yellow">Loading game...</span>',
-        '<span class="text-terminal-cyan">Type "blackjack-start" to begin playing</span>',
-      ];
-    case 'blackjack-start':
-      inBlackjackMode = true;
-      initBlackjackGame();
-      return displayBlackjackGame();
-    case 'quit':
-      if (zorkGame.inZorkMode) {
-        return zorkGame.endGame();
-      } else if (inBlackjackMode) {
-        inBlackjackMode = false;
-        return ['Thanks for playing Blackjack! Returning to terminal mode.'];
-      } else {
-        return ['No active game to quit.'];
+      return ['Usage: filter [tag]'];
+    case 'codex':
+      // Check if there are subcommands
+      if (args.length > 1) {
+        const subCommand = args[1].toLowerCase();
+
+        // Get all available content types first
+        const content = await fetchContent();
+        const availableTypes = ['all'];
+        content.forEach((item) => {
+          if (!availableTypes.includes(item.type)) {
+            availableTypes.push(item.type);
+          }
+        });
+
+        // Handle content type directly
+        if (subCommand === 'all' || availableTypes.includes(subCommand)) {
+          return await listContentByType(subCommand);
+        } else if (subCommand === 'list' && args.length > 2) {
+          // For backward compatibility with list subcommand
+          const contentType = args[2].toLowerCase();
+          if (contentType === 'all' || availableTypes.includes(contentType)) {
+            return await listContentByType(contentType);
+          } else {
+            return [
+              `<span class="text-terminal-red">Error: Content type "${contentType}" not found.</span>`,
+              `<span class="text-terminal-dimmed">Available types: ${availableTypes.join(
+                ', '
+              )}</span>`,
+              `<span class="text-terminal-dimmed">Try "codex all" to see all content.</span>`,
+            ];
+          }
+        } else if (subCommand === 'help') {
+          // Handle help subcommand
+          return [
+            '<span class="text-terminal-cyan font-bold">━━━ Codex Help ━━━</span>',
+            '<span class="text-terminal-blue inline-block min-w-[110px]">codex</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show content type menu</span>',
+            '<span class="text-terminal-blue inline-block min-w-[110px]">codex all</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">List all content</span>',
+            '<span class="text-terminal-blue inline-block min-w-[110px]">codex [type]</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">List content of specific type</span>',
+          ];
+        } else {
+          // Unknown subcommand or type
+          const typeColor = getTypeColor(subCommand);
+          return [
+            `<span class="${typeColor}">Error: Content type "${subCommand}" not found.</span>`,
+            `<span class="text-terminal-dimmed">Available types: ${availableTypes.join(
+              ', '
+            )}</span>`,
+            `<span class="text-terminal-dimmed">Try "codex all" to see all content.</span>`,
+          ];
+        }
       }
+
+      // Default to showing the main menu
+      return await getContentTypeMenu();
     case '':
       return [];
     default:
       // Handle not found
-      if (zorkGame.inZorkMode) {
-        return zorkGame.handleCommand(cmd);
-      }
       return [`Command not found: ${cmd}. Type "help" for available commands.`];
   }
 };
@@ -327,215 +485,3 @@ const handleLsCommand = (arg, currentPath) => {
     return [`Directory not found: ${dirToList}`];
   }
 };
-
-// Blackjack game functions
-function initBlackjackGame() {
-  // Reset game state
-  blackjackGame = {
-    player: [],
-    dealer: [],
-    deck: [],
-    playerScore: 0,
-    dealerScore: 0,
-    playerTurn: true,
-    gameOver: false,
-    result: '',
-  };
-
-  // Create and shuffle deck
-  createDeck();
-  shuffleDeck();
-
-  // Deal initial cards
-  blackjackGame.player.push(drawCard());
-  blackjackGame.dealer.push(drawCard());
-  blackjackGame.player.push(drawCard());
-  blackjackGame.dealer.push(drawCard());
-
-  // Calculate scores
-  blackjackGame.playerScore = calculateScore(blackjackGame.player);
-  blackjackGame.dealerScore = calculateScore(blackjackGame.dealer);
-
-  // Check for natural blackjack
-  if (blackjackGame.playerScore === 21) {
-    blackjackGame.playerTurn = false;
-    dealerPlay();
-  }
-}
-
-function createDeck() {
-  const suits = ['♥', '♦', '♣', '♠'];
-  const values = [
-    'A',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    'J',
-    'Q',
-    'K',
-  ];
-
-  blackjackGame.deck = [];
-
-  for (const suit of suits) {
-    for (const value of values) {
-      blackjackGame.deck.push({ suit, value });
-    }
-  }
-}
-
-function shuffleDeck() {
-  for (let i = blackjackGame.deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [blackjackGame.deck[i], blackjackGame.deck[j]] = [
-      blackjackGame.deck[j],
-      blackjackGame.deck[i],
-    ];
-  }
-}
-
-function drawCard() {
-  if (blackjackGame.deck.length === 0) {
-    createDeck();
-    shuffleDeck();
-  }
-  return blackjackGame.deck.pop();
-}
-
-function calculateScore(cards) {
-  let score = 0;
-  let aces = 0;
-
-  for (const card of cards) {
-    if (card.value === 'A') {
-      aces++;
-      score += 11;
-    } else if (['K', 'Q', 'J'].includes(card.value)) {
-      score += 10;
-    } else {
-      score += parseInt(card.value);
-    }
-  }
-
-  // Adjust aces if score is over 21
-  while (score > 21 && aces > 0) {
-    score -= 10;
-    aces--;
-  }
-
-  return score;
-}
-
-function dealerPlay() {
-  // Dealer draws until 17 or higher
-  while (blackjackGame.dealerScore < 17) {
-    blackjackGame.dealer.push(drawCard());
-    blackjackGame.dealerScore = calculateScore(blackjackGame.dealer);
-  }
-
-  // Determine result
-  blackjackGame.gameOver = true;
-
-  if (blackjackGame.playerScore > 21) {
-    blackjackGame.result = 'Bust! You lose.';
-  } else if (blackjackGame.dealerScore > 21) {
-    blackjackGame.result = 'Dealer busts! You win!';
-  } else if (blackjackGame.playerScore > blackjackGame.dealerScore) {
-    blackjackGame.result = 'You win!';
-  } else if (blackjackGame.playerScore < blackjackGame.dealerScore) {
-    blackjackGame.result = 'You lose.';
-  } else {
-    blackjackGame.result = "Push. It's a tie.";
-  }
-}
-
-function formatCard(card) {
-  const color = ['♥', '♦'].includes(card.suit) ? 'red' : 'black';
-  return `<span class="text-terminal-${color}">${card.value}${card.suit}</span>`;
-}
-
-function displayBlackjackGame() {
-  const output = [];
-
-  output.push('<span class="text-terminal-blue text-lg">BLACKJACK</span>');
-
-  // Display dealer's hand
-  output.push('<span class="text-terminal-cyan">Dealer\'s hand:</span>');
-  if (blackjackGame.playerTurn && !blackjackGame.gameOver) {
-    // Only show first card during player's turn
-    output.push(`${formatCard(blackjackGame.dealer[0])} [?]`);
-  } else {
-    output.push(blackjackGame.dealer.map(formatCard).join(' '));
-    output.push(`Total: ${blackjackGame.dealerScore}`);
-  }
-
-  // Display player's hand
-  output.push('<span class="text-terminal-green">Your hand:</span>');
-  output.push(blackjackGame.player.map(formatCard).join(' '));
-  output.push(`Total: ${blackjackGame.playerScore}`);
-
-  // Display result if game is over
-  if (blackjackGame.gameOver) {
-    output.push(
-      `<span class="text-terminal-yellow">${blackjackGame.result}</span>`
-    );
-    output.push(
-      '<span class="text-terminal-cyan">Type "blackjack-start" to play again or "quit" to exit.</span>'
-    );
-  } else if (blackjackGame.playerTurn) {
-    output.push(
-      '<span class="text-terminal-cyan">Type "hit" to draw another card or "stand" to end your turn.</span>'
-    );
-  }
-
-  return output;
-}
-
-function handleBlackjackCommand(command) {
-  const cmd = command.toLowerCase().trim();
-
-  if (blackjackGame.gameOver) {
-    if (cmd === 'blackjack-start') {
-      initBlackjackGame();
-      return displayBlackjackGame();
-    } else {
-      return [
-        'Game is over. Type "blackjack-start" to play again or "quit" to exit.',
-      ];
-    }
-  }
-
-  if (blackjackGame.playerTurn) {
-    switch (cmd) {
-      case 'hit':
-        blackjackGame.player.push(drawCard());
-        blackjackGame.playerScore = calculateScore(blackjackGame.player);
-
-        if (blackjackGame.playerScore >= 21) {
-          blackjackGame.playerTurn = false;
-          dealerPlay();
-        }
-        return displayBlackjackGame();
-
-      case 'stand':
-        blackjackGame.playerTurn = false;
-        dealerPlay();
-        return displayBlackjackGame();
-
-      default:
-        return [
-          'Invalid command. Type "hit" to draw another card or "stand" to end your turn.',
-        ];
-    }
-  }
-
-  return [
-    'Invalid command. Type "blackjack-start" to play again or "quit" to exit.',
-  ];
-}

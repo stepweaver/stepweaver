@@ -9,13 +9,13 @@
   --color-terminal-text: #e2e2e2;
   --color-terminal-muted: #8b949e;
   --color-terminal-yellow: #ffff00;
-  --color-terminal-red: #f97583;
-  --color-terminal-blue: #79b8ff;
+  --color-terminal-red: #ff3e3e;
+  --color-terminal-blue: #38beff;
   --color-terminal-cyan: #56b6c2;
   --color-terminal-dimmed: #6a737d;
   --color-terminal-magenta: #ff79c6;
+  --color-terminal-pink: #ff79c6;
   --color-terminal-purple: #a855f7;
-  --color-terminal-blue: #3b82f6;
   --color-terminal-orange: #ffa500;
   --background: #0d1211;
   --foreground: #00ff00;

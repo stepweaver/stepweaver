@@ -25,11 +25,14 @@ export default function CodexPage() {
 
   // Sync terminal state with UI buttons
   const syncFilterState = (filters) => {
+    // Safely handle null or undefined filters
+    if (!filters) return;
+
     if (filters.type !== undefined) {
       setActiveTypeFilter(filters.type || 'all');
     }
     if (filters.tags !== undefined) {
-      setActiveHashtags(filters.tags);
+      setActiveHashtags(filters.tags || []);
     }
   };
 
@@ -123,29 +126,75 @@ export default function CodexPage() {
 
   // Toggle hashtag selection
   const toggleHashtag = (tag) => {
-    setActiveHashtags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    // Debounce flag to prevent multiple rapid clicks
+    if (toggleHashtag.isProcessing) return;
+    toggleHashtag.isProcessing = true;
 
-    // Execute command in terminal when tag is clicked
+    // Update state only once
+    if (activeHashtags.includes(tag)) {
+      setActiveHashtags((prev) => prev.filter((t) => t !== tag));
+    } else {
+      setActiveHashtags((prev) => [...prev, tag]);
+    }
+
+    // Execute command in terminal (once)
     if (terminalRef.current?.executeCommand) {
-      terminalRef.current.executeCommand(`filter ${tag}`);
+      // Clear previous timer if exists
+      if (toggleHashtag.timer) {
+        clearTimeout(toggleHashtag.timer);
+      }
+
+      // Set a new timer
+      toggleHashtag.timer = setTimeout(() => {
+        terminalRef.current.executeCommand(`filter ${tag}`);
+        toggleHashtag.isProcessing = false;
+      }, 50);
+    } else {
+      // Reset processing flag immediately if no terminal reference
+      toggleHashtag.isProcessing = false;
     }
   };
 
+  // Initialize flags
+  toggleHashtag.isProcessing = false;
+  toggleHashtag.timer = null;
+
   // Setup commands when a type filter is selected
   const handleTypeFilter = (type) => {
+    // Prevent duplicate commands during rapid clicks
+    if (handleTypeFilter.processing) return;
+    handleTypeFilter.processing = true;
+
+    // Update UI state
     setActiveTypeFilter(type);
 
     // Execute command in terminal when type is clicked
     if (terminalRef.current?.executeCommand) {
-      if (type === 'all') {
-        terminalRef.current.executeCommand('ls codex');
-      } else {
-        terminalRef.current.executeCommand(`ls codex/${type}`);
+      // Clear any existing timeout
+      if (handleTypeFilter.timer) {
+        clearTimeout(handleTypeFilter.timer);
       }
+
+      // Set a single timer to execute the command
+      handleTypeFilter.timer = setTimeout(() => {
+        if (type === 'all') {
+          terminalRef.current.executeCommand('codex all');
+        } else {
+          terminalRef.current.executeCommand(`codex ${type}`);
+        }
+
+        // Reset processing flag
+        handleTypeFilter.processing = false;
+      }, 50);
+    } else {
+      // Reset immediately if no terminal reference
+      handleTypeFilter.processing = false;
     }
   };
+
+  // Initialize flags
+  handleTypeFilter.processing = false;
+  handleTypeFilter.timer = null;
 
   return (
     <div className='space-y-8 mt-8'>

@@ -22,6 +22,7 @@ module.exports = {
           window: 'var(--color-terminal-dark)',
           header: 'var(--color-terminal-light)',
           magenta: 'var(--color-terminal-magenta)',
+          pink: 'var(--color-terminal-pink)',
           purple: 'var(--color-terminal-purple)',
           orange: 'var(--color-terminal-orange)',
         },
