@@ -84,7 +84,7 @@ const updateRegularOutput = (output, setLines) => {
 const Terminal = () => {
   // Define welcome messages as a constant so we can reuse it
   const welcomeMessages = [
-    'Welcome to stepweaver.dev v1.0.0 - A terminal-inspired portfolio and blog.',
+    'Welcome to stepweaver terminolio v1.0.0 - A terminal-inspired portfolio and blog.',
     'Type "help" to see available commands.',
   ];
 

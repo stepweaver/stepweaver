@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import PostCard from '@/components/ui/PostCard';
 import TypeTagButton from '@/components/ui/TypeTagButton';
+import Terminal from '@/components/terminal/Terminal';
+import TerminalWindow from '@/components/ui/TerminalWindow';
 
 export default function CodexPage() {
   const router = useRouter();
@@ -20,6 +21,27 @@ export default function CodexPage() {
   const [activeHashtags, setActiveHashtags] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const terminalRef = useRef(null);
+
+  // Sync terminal state with UI buttons
+  const syncFilterState = (filters) => {
+    if (filters.type !== undefined) {
+      setActiveTypeFilter(filters.type || 'all');
+    }
+    if (filters.tags !== undefined) {
+      setActiveHashtags(filters.tags);
+    }
+  };
+
+  useEffect(() => {
+    // Update terminal when filters change via UI
+    if (terminalRef.current) {
+      terminalRef.current.updateFilters({
+        type: activeTypeFilter === 'all' ? null : activeTypeFilter,
+        tags: activeHashtags,
+      });
+    }
+  }, [activeTypeFilter, activeHashtags]);
 
   // Fetch all posts from API
   useEffect(() => {
@@ -29,6 +51,11 @@ export default function CodexPage() {
         const res = await fetch('/api/codex');
         const data = await res.json();
         setPosts(data);
+
+        // Initialize terminal with reference to sync function
+        if (terminalRef.current) {
+          terminalRef.current.setSyncCallback(syncFilterState);
+        }
       } catch (error) {
         setPosts([]);
       } finally {
@@ -39,37 +66,35 @@ export default function CodexPage() {
   }, []);
 
   // Sort all posts by date descending
-  const allContent = useMemo(() => {
-    return posts
-      .map((post) => ({ type: post.type, content: post }))
-      .sort((a, b) => new Date(b.content.date) - new Date(a.content.date));
+  const allPosts = useMemo(() => {
+    return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [posts]);
 
   // Get all unique hashtags for filter buttons
   const allHashtags = useMemo(() => {
     const tags = new Set();
-    allContent.forEach((item) => {
-      if (item.content.hashtags) {
-        item.content.hashtags.forEach((tag) => tags.add(tag));
+    allPosts.forEach((post) => {
+      if (post.hashtags) {
+        post.hashtags.forEach((tag) => tags.add(tag));
       }
     });
     return Array.from(tags);
-  }, [allContent]);
+  }, [allPosts]);
 
   // Filter content based on selected filters
-  const filteredContent = useMemo(() => {
-    let result = allContent;
+  const filteredPosts = useMemo(() => {
+    let result = allPosts;
     if (activeTypeFilter !== 'all') {
-      result = result.filter((item) => item.type === activeTypeFilter);
+      result = result.filter((post) => post.type === activeTypeFilter);
     }
     if (activeHashtags.length > 0) {
-      result = result.filter((item) => {
-        const itemTags = item.content.hashtags || [];
-        return activeHashtags.some((tag) => itemTags.includes(tag));
+      result = result.filter((post) => {
+        const postTags = post.hashtags || [];
+        return activeHashtags.some((tag) => postTags.includes(tag));
       });
     }
     return result;
-  }, [allContent, activeTypeFilter, activeHashtags]);
+  }, [allPosts, activeTypeFilter, activeHashtags]);
 
   // Only set activeHashtags from tagParam on initial load
   const initializedFromUrl = useRef(false);
@@ -101,11 +126,41 @@ export default function CodexPage() {
     setActiveHashtags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+
+    // Execute command in terminal when tag is clicked
+    if (terminalRef.current?.executeCommand) {
+      terminalRef.current.executeCommand(`filter ${tag}`);
+    }
+  };
+
+  // Setup commands when a type filter is selected
+  const handleTypeFilter = (type) => {
+    setActiveTypeFilter(type);
+
+    // Execute command in terminal when type is clicked
+    if (terminalRef.current?.executeCommand) {
+      if (type === 'all') {
+        terminalRef.current.executeCommand('ls codex');
+      } else {
+        terminalRef.current.executeCommand(`ls codex/${type}`);
+      }
+    }
   };
 
   return (
     <div className='space-y-8 mt-8'>
       <div>
+        {/* Page Title */}
+        <div className='border-l-2 border-terminal-green pl-5 mb-8'>
+          <h2 className='text-xl text-terminal-green'>
+            # CODEX <span className='animate-blink'>_</span>
+          </h2>
+          <p className='text-terminal-text mt-4'>
+            Browse my collection of blog posts, podcasts, projects and more. Use
+            the terminal to explore or filter using the buttons below.
+          </p>
+        </div>
+
         {/* Filters */}
         <div className='mt-6 mb-8'>
           {/* Type filter */}
@@ -118,14 +173,14 @@ export default function CodexPage() {
               <TypeTagButton
                 type='all'
                 active={activeTypeFilter === 'all'}
-                onClick={() => setActiveTypeFilter('all')}
+                onClick={() => handleTypeFilter('all')}
               >
                 all
               </TypeTagButton>
               <TypeTagButton
                 type='blog'
                 active={activeTypeFilter === 'blog'}
-                onClick={() => setActiveTypeFilter('blog')}
+                onClick={() => handleTypeFilter('blog')}
               >
                 {activeTypeFilter !== 'blog' && (
                   <span className='mr-1'>📝</span>
@@ -135,7 +190,7 @@ export default function CodexPage() {
               <TypeTagButton
                 type='podcast'
                 active={activeTypeFilter === 'podcast'}
-                onClick={() => setActiveTypeFilter('podcast')}
+                onClick={() => handleTypeFilter('podcast')}
               >
                 {activeTypeFilter !== 'podcast' && (
                   <span className='mr-1'>🎙️</span>
@@ -145,7 +200,7 @@ export default function CodexPage() {
               <TypeTagButton
                 type='website'
                 active={activeTypeFilter === 'website'}
-                onClick={() => setActiveTypeFilter('website')}
+                onClick={() => handleTypeFilter('website')}
               >
                 {activeTypeFilter !== 'website' && (
                   <span className='mr-1'>🌐</span>
@@ -155,7 +210,7 @@ export default function CodexPage() {
               <TypeTagButton
                 type='article'
                 active={activeTypeFilter === 'article'}
-                onClick={() => setActiveTypeFilter('article')}
+                onClick={() => handleTypeFilter('article')}
               >
                 {activeTypeFilter !== 'article' && (
                   <span className='mr-1'>📄</span>
@@ -165,7 +220,7 @@ export default function CodexPage() {
               <TypeTagButton
                 type='tool'
                 active={activeTypeFilter === 'tool'}
-                onClick={() => setActiveTypeFilter('tool')}
+                onClick={() => handleTypeFilter('tool')}
               >
                 {activeTypeFilter !== 'tool' && (
                   <span className='mr-1'>🛠️</span>
@@ -175,7 +230,7 @@ export default function CodexPage() {
               <TypeTagButton
                 type='project'
                 active={activeTypeFilter === 'project'}
-                onClick={() => setActiveTypeFilter('project')}
+                onClick={() => handleTypeFilter('project')}
               >
                 {activeTypeFilter !== 'project' && (
                   <span className='mr-1'>✨</span>
@@ -217,26 +272,17 @@ export default function CodexPage() {
           </div>
         </div>
 
-        {/* Content display */}
-        <div className='space-y-3'>
-          {loading ? (
-            <div className='text-terminal-dimmed text-center py-8'>
-              <span className='animate-pulse'>Loading content...</span>
-            </div>
-          ) : filteredContent.length > 0 ? (
-            filteredContent.map((item) => (
-              <PostCard
-                key={`${item.type}-${item.content.slug}`}
-                type={item.type}
-                content={item.content}
-                onTagClick={toggleHashtag}
-              />
-            ))
-          ) : (
-            <div className='text-terminal-dimmed text-center py-8'>
-              No {activeTypeFilter} posts
-            </div>
-          )}
+        {/* Terminal display */}
+        <div className='max-w-4xl mx-auto'>
+          <div
+            className={`transition-opacity duration-500 ${
+              loading ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            <TerminalWindow title='~/codex'>
+              {!loading && <Terminal ref={terminalRef} />}
+            </TerminalWindow>
+          </div>
         </div>
       </div>
     </div>
