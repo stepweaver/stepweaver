@@ -62,22 +62,21 @@ const formatContentItem = (item, index) => {
       typeColor = 'text-terminal-white';
   }
 
-  // Truncate description if needed
-  const maxDescLength = 60;
-  let description = item.description || '';
-  const truncatedDesc =
-    description.length > maxDescLength
-      ? description.substring(0, maxDescLength) + '...'
-      : description;
+  // Truncate title if needed (max 40 chars for better mobile display)
+  const maxTitleLength = 40;
+  const title = item.title || '';
+  const truncatedTitle =
+    title.length > maxTitleLength
+      ? title.substring(0, maxTitleLength) + '...'
+      : title;
 
   // Create the navigation path for the content item
   const navigationPath = `codex/${item.type}/${item.slug}`;
 
-  return `<span class="flex mb-1">
-    <span class="${typeColor} cursor-pointer hover:underline" data-open="${navigationPath}">${item.title}</span>
-    <span class="mx-2 text-terminal-dimmed">-</span>
-    <span class="text-terminal-text">${truncatedDesc}</span>
-    <span class="ml-auto text-terminal-dimmed text-xs">${formattedDate}</span>
+  // Return a simplified layout with just title and right-justified date
+  return `<span class="flex items-center justify-between whitespace-nowrap overflow-hidden mb-1">
+    <span class="${typeColor} cursor-pointer hover:underline text-ellipsis overflow-hidden" data-open="${navigationPath}">${truncatedTitle}</span>
+    <span class="text-terminal-dimmed text-xs ml-2">${formattedDate}</span>
   </span>`;
 };
 
