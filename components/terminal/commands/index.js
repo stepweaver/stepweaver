@@ -62,7 +62,7 @@ const formatContentItem = (item, index) => {
       typeColor = 'text-terminal-white';
   }
 
-  // Truncate title if needed (max 40 chars for better mobile display)
+  // Truncate title if needed (shorter for mobile compatibility)
   const maxTitleLength = 40;
   const title = item.title || '';
   const truncatedTitle =
@@ -70,14 +70,26 @@ const formatContentItem = (item, index) => {
       ? title.substring(0, maxTitleLength) + '...'
       : title;
 
+  // Truncate description if needed
+  const maxDescLength = 60;
+  const description = item.description || '';
+  const truncatedDesc =
+    description.length > maxDescLength
+      ? description.substring(0, maxDescLength) + '...'
+      : description;
+
   // Create the navigation path for the content item
   const navigationPath = `codex/${item.type}/${item.slug}`;
 
-  // Return a simplified layout with just title and right-justified date
-  return `<span class="flex items-center justify-between whitespace-nowrap overflow-hidden mb-1">
-    <span class="${typeColor} cursor-pointer hover:underline text-ellipsis overflow-hidden" data-open="${navigationPath}">${truncatedTitle}</span>
-    <span class="text-terminal-dimmed text-xs ml-2">${formattedDate}</span>
-  </span>`;
+  // Return a responsive layout
+  return `<div class="flex items-center justify-between whitespace-nowrap overflow-hidden mb-1">
+    <div class="flex overflow-hidden sm:flex-1 min-w-0">
+      <span class="${typeColor} cursor-pointer hover:underline text-ellipsis overflow-hidden" data-open="${navigationPath}">${truncatedTitle}</span>
+      <span class="mx-2 text-terminal-dimmed hidden sm:inline">-</span>
+      <span class="text-terminal-text text-ellipsis overflow-hidden hidden sm:inline">${truncatedDesc}</span>
+    </div>
+    <span class="text-terminal-dimmed text-xs ml-2 whitespace-nowrap">${formattedDate}</span>
+  </div>`;
 };
 
 // Helper function to get color based on content type
