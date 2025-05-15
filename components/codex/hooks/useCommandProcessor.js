@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function useCommandProcessor({
   allHashtags,
@@ -8,6 +9,8 @@ export default function useCommandProcessor({
   terminalRef,
   showTerminal,
 }) {
+  const router = useRouter();
+
   const toggleHashtag = useCallback(
     (tag) => {
       const normalizedTag = tag.toLowerCase();
@@ -20,7 +23,7 @@ export default function useCommandProcessor({
       const matchedTag = allHashtags.find(
         (t) => t.toLowerCase() === normalizedTag
       );
-      
+
       if (!matchedTag) return; // Tag doesn't exist
 
       // Find if already active (case-insensitive check)
@@ -29,7 +32,7 @@ export default function useCommandProcessor({
       );
 
       if (isActive) {
-        setActiveHashtags((prev) => 
+        setActiveHashtags((prev) =>
           prev.filter((t) => t.toLowerCase() !== normalizedTag)
         );
       } else {
@@ -46,7 +49,17 @@ export default function useCommandProcessor({
   const processCommand = useCallback(
     (cmd, isNewCommand = false) => {
       const normalizedCmd = cmd.toLowerCase();
-      
+
+      // Handle the 'open' command which should be passed directly to the terminal
+      if (normalizedCmd.startsWith('open ')) {
+        // We need to make sure the terminal is shown when using the open command
+        if (terminalRef.current?.executeCommand) {
+          // Force terminal to be shown for the open command to work
+          terminalRef.current.executeCommand(cmd);
+        }
+        return;
+      }
+
       // Define valid content types
       const contentTypes = [
         'all',
@@ -128,11 +141,21 @@ export default function useCommandProcessor({
       // Always pass to terminal for visual feedback if visible
       if (showTerminal && terminalRef.current?.executeCommand) {
         // Translate abbreviated commands to full commands for terminal
-        if (contentTypes.includes(normalizedCmd) && !normalizedCmd.startsWith('codex')) {
+        if (
+          contentTypes.includes(normalizedCmd) &&
+          !normalizedCmd.startsWith('codex')
+        ) {
           terminalRef.current.executeCommand(`codex ${normalizedCmd}`);
-        } else if (allHashtags.some(t => t.toLowerCase() === normalizedCmd) && !normalizedCmd.startsWith('filter')) {
-          const matchedTag = allHashtags.find(t => t.toLowerCase() === normalizedCmd);
-          terminalRef.current.executeCommand(`filter ${matchedTag || normalizedCmd}`);
+        } else if (
+          allHashtags.some((t) => t.toLowerCase() === normalizedCmd) &&
+          !normalizedCmd.startsWith('filter')
+        ) {
+          const matchedTag = allHashtags.find(
+            (t) => t.toLowerCase() === normalizedCmd
+          );
+          terminalRef.current.executeCommand(
+            `filter ${matchedTag || normalizedCmd}`
+          );
         } else {
           terminalRef.current.executeCommand(cmd); // Keep original casing for terminal display
         }

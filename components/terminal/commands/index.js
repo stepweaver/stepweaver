@@ -92,6 +92,67 @@ const formatContentItem = (item, index) => {
   </div>`;
 };
 
+// Function to find a post by slug or partial slug and display it
+const findAndOpenPost = async (searchQuery) => {
+  if (!searchQuery || searchQuery.trim() === '') {
+    return [
+      '<span class="text-terminal-red">Error: No search query provided.</span>',
+      '<span class="text-terminal-dimmed">Usage: open [post-slug]</span>',
+      '<span class="text-terminal-dimmed">Example: open my-first-post</span>',
+    ];
+  }
+
+  const content = await fetchContent();
+  const normalizedQuery = searchQuery.toLowerCase().trim();
+
+  // Find posts where slug includes the search term
+  const matchingPosts = content.filter(
+    (post) =>
+      post.slug.toLowerCase().includes(normalizedQuery) ||
+      post.title.toLowerCase().includes(normalizedQuery)
+  );
+
+  if (matchingPosts.length === 0) {
+    return [
+      `<span class="text-terminal-red">Error: No posts found matching "${searchQuery}".</span>`,
+      '<span class="text-terminal-dimmed">Try searching with a different term or see all posts with "codex all".</span>',
+    ];
+  }
+
+  if (matchingPosts.length === 1) {
+    // If only one match, return a link to that post with a redirect message
+    const post = matchingPosts[0];
+    const navigationPath = `codex/${post.type}/${post.slug}`;
+
+    // Add both data-open and data-auto-open to maximize chances of navigation working
+    return [
+      `<span class="text-terminal-green">Found: "${post.title}"</span>`,
+      `<span class="text-terminal-dimmed">Opening <span class="text-terminal-cyan cursor-pointer" data-open="${navigationPath}">${navigationPath}</span>...</span>`,
+      // Add multiple navigation options to increase the chance of it working
+      `<span data-auto-open="${navigationPath}" style="display:inline-block;">Auto-opening post...</span>`,
+      `<script>setTimeout(() => window.location.href = '/${navigationPath}', 1000);</script>`,
+    ];
+  } else {
+    // If multiple matches, show a list of options
+    const output = [
+      `<span class="text-terminal-green">Found ${matchingPosts.length} posts matching "${searchQuery}":</span>`,
+      '',
+    ];
+
+    // Add each matching post as a clickable link
+    matchingPosts.forEach((post, index) => {
+      output.push(formatContentItem(post, index + 1));
+    });
+
+    output.push('');
+    output.push(
+      '<span class="text-terminal-dimmed">Click on a post title to open it, or use "open [full-slug]" for exact match.</span>'
+    );
+
+    return output;
+  }
+};
+
 // Helper function to get color based on content type
 const getTypeColor = (type) => {
   switch (type) {
@@ -334,16 +395,18 @@ export const handleCommand = async (
     case 'help':
       return [
         '<span class="text-terminal-cyan">━━━ SYSTEM COMMANDS ━━━</span>',
-        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">help</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show this message</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">clear</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Clear the terminal</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">cd</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Change directory <span class="text-terminal-cyan">(cd about, cd codex, etc)</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">resume</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Display my resume</span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">open</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Open a post by slug <span class="text-terminal-cyan">(open my-post-slug)</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">weather</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show the weather <span class="text-terminal-cyan">(weather [location])</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">sudo</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Attempt to gain admin privileges</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">codex</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Browse content by type</span>',
       ];
     case 'clear':
       return [];
+    case 'open':
+      return await findAndOpenPost(arg);
     case 'weather':
       return await fetchWeather(arg || 'new york');
     case 'sudo':

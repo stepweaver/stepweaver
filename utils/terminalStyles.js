@@ -30,7 +30,7 @@ export const getGlowStyle = (type) => {
   const glowColors = {
     blog: '0, 255, 65', // terminal-green
     podcast: '192, 96, 255', // terminal-purple
-    website: '255, 214, 0', // terminal-yellow
+    website: '255, 255, 0', // terminal-yellow
     article: '255, 80, 80', // terminal-red
     tool: '80, 140, 255', // terminal-blue
     project: '255, 85, 255', // fluorescent magenta #ff55ff
@@ -48,7 +48,7 @@ export const getTypeColorValue = (type) => {
   const colorMap = {
     blog: 'rgb(0, 255, 65)', // terminal-green
     podcast: 'rgb(192, 96, 255)', // terminal-purple
-    website: 'rgb(255, 214, 0)', // terminal-yellow
+    website: 'rgb(255, 255, 0)', // terminal-yellow
     article: 'rgb(255, 80, 80)', // terminal-red
     tool: 'rgb(80, 140, 255)', // terminal-blue
     project: 'rgb(255, 85, 255)', // fluorescent magenta #ff55ff

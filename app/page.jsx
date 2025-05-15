@@ -49,7 +49,7 @@ export default function Home() {
     <div className='space-y-8 mt-4'>
       <div className='border-l-2 border-terminal-green pl-5'>
         <h2 className='text-xl text-terminal-green'>
-          # WELCOME <span className='animate-blink'>_</span>
+          # WELCOME<span className='animate-blink'>_</span>
         </h2>
         <p className='text-terminal-text mt-4'>
           I&apos;m a web developer and business analyst at the University of
@@ -66,7 +66,7 @@ export default function Home() {
       </div>
       <div className='mt-8'>
         <h3 className='text-terminal-green text-xl mb-4 border-terminal-green pl-5'>
-          # LATEST_POSTS <span className='animate-blink'>_</span>
+          # LATEST POSTS<span className='animate-blink'>_</span>
         </h3>
         {loading ? (
           <div className='text-terminal-dimmed'>Loading posts...</div>

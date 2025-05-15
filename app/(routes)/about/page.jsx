@@ -3,7 +3,7 @@ import ContactForm from '@/components/ui/ContactForm';
 export const metadata = {
   title: 'About Me',
   description: 'Learn more about me and my work',
-  metadataBase: new URL('https://stepweaver.dev'), // TODO: CHANGE TO PROD URL - https://stepweaver.dev
+  metadataBase: new URL('https://stepweaver.dev'),
   openGraph: {
     title: 'About Me',
     description: 'Learn more about me and my work',
@@ -16,7 +16,7 @@ export default function AboutPage() {
     <div className='space-y-8 mt-4'>
       <div className='border-l-2 border-terminal-green pl-5'>
         <h2 className='text-xl text-terminal-green'>
-          # ABOUT ME <span className='blink'>_</span>
+          # ABOUT ME<span className='blink'>_</span>
         </h2>
         <p className='text-terminal-text mt-4'>
           I&apos;m a problem-solver, builder, and relentless learner with a

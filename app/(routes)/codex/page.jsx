@@ -12,6 +12,10 @@ import PostItem from '@/components/codex/PostItem';
 import useCommandProcessor from '@/components/codex/hooks/useCommandProcessor';
 import { formatDate, getTypeColor } from '@/utils/terminalStyles';
 
+const ColoredText = ({ color, children }) => (
+  <span className={`text-terminal-${color}`}>{children}</span>
+);
+
 export default function CodexPage() {
   const router = useRouter();
   const [tagParam, setTagParam] = useState(null);
@@ -150,6 +154,17 @@ export default function CodexPage() {
     setShowTerminal((prev) => !prev);
   };
 
+  // Process commands and ensure terminal is visible for certain commands like open
+  const handleExecuteCommand = (cmd) => {
+    // If it's an "open" command, make sure the terminal is visible
+    if (cmd.toLowerCase().startsWith('open ')) {
+      setShowTerminal(true);
+    }
+
+    // Process the command
+    processCommand(cmd, true);
+  };
+
   // Handle type filter button click
   const handleTypeFilter = (type) => {
     setActiveTypeFilter(type);
@@ -163,13 +178,39 @@ export default function CodexPage() {
     }
   };
 
+  // Add direct click handler for navigation
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      // Find closest element with data-open attribute
+      const target = e.target.closest('[data-open], [data-auto-open]');
+      if (target) {
+        const path =
+          target.getAttribute('data-open') ||
+          target.getAttribute('data-auto-open');
+        if (path) {
+          // Navigate to the path
+          e.preventDefault();
+          router.push(`/${path}`);
+        }
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('click', handleDocumentClick);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [router]);
+
   return (
     <div className='space-y-6 mt-8'>
       <div>
         {/* Page Title with terminal toggle button */}
         <div className='border-l-2 border-terminal-green pl-5 mb-6'>
           <h2 className='text-xl text-terminal-green flex items-center'>
-            # CODEX <span className='animate-blink ml-1 mr-4'>_</span>
+            # CODEX<span className='animate-blink ml-1 mr-4'>_</span>
           </h2>
           <p className='text-terminal-text mt-2'>
             Browse my collection of blog posts, podcasts, projects and more.
@@ -178,7 +219,9 @@ export default function CodexPage() {
               <code className='text-terminal-green'>blog</code>,{' '}
               <code className='text-terminal-green ml-1'>project</code>,
               hashtags like <code className='text-terminal-green ml-1'>ai</code>
-              , or combinations like{' '}
+              , or use{' '}
+              <code className='text-terminal-green ml-1'>open [slug]</code> to
+              find posts directly. Try combinations like{' '}
               <code className='text-terminal-green ml-1'>blog+ai</code>. Type{' '}
               <code className='text-terminal-green ml-1'>clear</code> to reset
               filters.
@@ -194,8 +237,8 @@ export default function CodexPage() {
 
         {/* Command input component */}
         <CommandInput
-          onExecuteCommand={processCommand}
-          placeholder='Type "blog", "ai", or combinations like "blog+ai"'
+          onExecuteCommand={handleExecuteCommand}
+          placeholder='Try "blog", "ai", or "open my-post" to find posts directly'
         />
 
         {/* Display loading or error state */}

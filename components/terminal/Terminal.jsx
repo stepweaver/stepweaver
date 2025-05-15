@@ -79,8 +79,8 @@ const updateRegularOutput = (output, setLines) => {
 const Terminal = forwardRef((props, ref) => {
   // Define welcome messages as a constant so we can reuse it
   const welcomeMessages = [
-    'Welcome to stepweaver terminolio v1.1.0 - A terminal-inspired portfolio and codex.',
-    'Type "help" to see available commands.',
+    '<span class="text-terminal-green">Welcome to λstepweaver terminolio v1.1.0 - A terminal for stepweaver.dev</span>',
+    '<span>Type <span class="text-terminal-cyan">"help"</span> to see a list of available commands.</span>',
   ];
 
   const [lines, setLines] = useState(welcomeMessages);
@@ -307,6 +307,27 @@ const Terminal = forwardRef((props, ref) => {
       }
     }
   };
+
+  // Effect to handle auto-open elements after they're added to the DOM
+  useEffect(() => {
+    // Find any auto-open elements that were added in the latest render
+    const autoOpenElements =
+      containerRef.current?.querySelectorAll('[data-auto-open]');
+    if (autoOpenElements && autoOpenElements.length > 0) {
+      // Get the first one and navigate to its path after a short delay
+      const path = autoOpenElements[0].getAttribute('data-auto-open');
+      if (path) {
+        // Use a longer delay to ensure the content is properly rendered
+        const timer = setTimeout(() => {
+          // Navigate to the post
+          router.push(`/${path}`);
+          // Extra logging for debugging
+          console.log(`Navigating to: /${path}`);
+        }, 1200);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [lines, router]);
 
   return (
     <div

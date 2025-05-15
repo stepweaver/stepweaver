@@ -23,7 +23,8 @@ export default function CommandInput({ onExecuteCommand, placeholder }) {
           onChange={(e) => setCommandInput(e.target.value)}
           className='flex-grow bg-transparent border-none text-terminal-text outline-none focus:ring-0'
           placeholder={
-            placeholder || 'Type "blog", "ai", or combinations like "blog+ai"'
+            placeholder ||
+            'Try "blog", "ai", or "open my-post" to find posts directly'
           }
         />
         <button

@@ -2,7 +2,7 @@
 
 /**
  * Terminal-styled update component for MDX content
- * Displays the update date in terminal format with a blinking cursor
+ * Displays the update date in terminal format
  */
 export default function Update({ frontmatter }) {
   if (!frontmatter?.updated) {
@@ -26,7 +26,6 @@ export default function Update({ frontmatter }) {
         <span className='update-date'>{bracketDate}</span>
         <span className='update-command'>"</span>
       </div>
-      <span className='terminal-cursor'></span>
     </div>
   );
 }
