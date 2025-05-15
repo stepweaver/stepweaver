@@ -187,6 +187,13 @@ const Terminal = forwardRef((props, ref) => {
         );
         return;
       }
+
+      // For resume, just show the resume display instead of navigating
+      if (destination === 'resume') {
+        displayCommandPrompt(command, currentPath, setLines);
+        processCommand('resume');
+        return;
+      }
     }
 
     // Show loading message for weather command

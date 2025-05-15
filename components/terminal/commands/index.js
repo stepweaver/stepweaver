@@ -130,7 +130,7 @@ const listContentByType = async (type) => {
       const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
       const typeColor = getTypeColor(type);
       return [
-        `<span class="text-terminal-cyan font-bold">━━━ ${typeLabel} Content ━━━</span>`,
+        `<span class="text-terminal-cyan">━━━ ${typeLabel} Content ━━━</span>`,
         `<span class="${typeColor}">No ${type} content available yet.</span>`,
         `<span class="text-terminal-dimmed">Try another content type or "codex all" to see all content.</span>`,
       ];
@@ -142,10 +142,8 @@ const listContentByType = async (type) => {
 
   // Format output for terminal display
   const output = [
-    `<span class="text-terminal-cyan font-bold">━━━ ${
-      type === 'all'
-        ? 'All Content'
-        : `${type.charAt(0).toUpperCase() + type.slice(1)} Content`
+    `<span class="text-terminal-cyan">━━━ ${
+      type === 'all' ? 'ALL CONTENT' : `${type.toUpperCase()} CONTENT`
     } ━━━</span>`,
     `<span class="text-terminal-dimmed">Displaying all${
       type !== 'all' ? ' ' + type : ''
@@ -176,7 +174,7 @@ const getContentTypeMenu = async () => {
 
   // Format output for terminal display
   const output = [
-    '<span class="text-terminal-cyan font-bold">━━━ Content Browser ━━━</span>',
+    '<span class="text-terminal-cyan">━━━ CONTENT BROWSER ━━━</span>',
     '<span class="text-terminal-dimmed">Browse content by type or view all.</span>',
     '',
   ];
@@ -193,9 +191,7 @@ const getContentTypeMenu = async () => {
       const typeColor = getTypeColor(type);
 
       output.push(
-        `<span><span class="${typeColor} inline-block min-w-[90px]">${type}</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white cursor-pointer" data-cmd="codex ${type}">${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        } content (${count})</span></span>`
+        `<span><span class="${typeColor} inline-block min-w-[90px]">${type}</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white cursor-pointer" data-cmd="codex ${type}">${type.toUpperCase()} content (${count})</span></span>`
       );
     });
 
@@ -283,6 +279,38 @@ const fetchWeather = async (location = 'new york') => {
   }
 };
 
+// Function to display resume in terminal format
+const displayResume = () => {
+  return [
+    '<span class="text-terminal-cyan">━━━ STEPHEN WEAVER ━━━</span>',
+    '',
+    '<span class="text-terminal-yellow">WEB DEVELOPER & BUSINESS ANALYST</span>',
+    '',
+    '<span class="text-terminal-green">EXPERIENCE</span>',
+    '<span class="text-terminal-white ml-4">Web Developer</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">λstepweaver</span>',
+    '<span class="text-terminal-white ml-4">Business Analyst</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">University of Notre Dame, Irish1Card Office</span>',
+    '<span class="text-terminal-white ml-4">Airborne Cryptologic Linguist</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">United States Air Force</span>',
+    '',
+    '<span class="text-terminal-green">TECHNICAL SKILLS</span>',
+    '<span class="text-terminal-white ml-4">Frontend</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">React, Next.js, JavaScript, TypeScript, Tailwind CSS</span>',
+    '<span class="text-terminal-white ml-4">Backend</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Node.js, Express, MongoDB, SQL, RESTful APIs</span>',
+    '<span class="text-terminal-white ml-4">DevOps</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Git, GitHub, AWS, npm/yarn</span>',
+    '',
+    '<span class="text-terminal-green">EDUCATION</span>',
+    '<span class="text-terminal-white ml-4">Bachelor of Arts, Grand Valley State University</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Communication Studies</span>',
+    '<span class="text-terminal-white ml-4">Associate of Arts, Ivy Tech Community College</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Business Administration</span>',
+    '',
+    '',
+    '<span onclick="window.open(\'/weaver_resume.pdf\', \'_blank\')" class="text-terminal-pink cursor-pointer animate-pulse py-2 inline-block my-2">DOWNLOAD RESUME</span>',
+  ];
+};
+
+// Function to handle resume download
+const handleResumeDownload = () => {
+  // This function is used when someone types "download resume" directly
+  return ['<span class="text-terminal-yellow">Opening resume PDF...</span>'];
+};
+
 export const handleCommand = async (
   command,
   currentPath,
@@ -305,10 +333,11 @@ export const handleCommand = async (
   switch (mainCommand) {
     case 'help':
       return [
-        '<span class="text-terminal-cyan font-bold">━━━ System Commands ━━━</span>',
+        '<span class="text-terminal-cyan">━━━ SYSTEM COMMANDS ━━━</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">help</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show this message</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">clear</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Clear the terminal</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">cd</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Change directory <span class="text-terminal-cyan">(cd about, cd codex, etc)</span></span>',
+        '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">resume</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Display my resume</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">weather</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show the weather <span class="text-terminal-cyan">(weather [location])</span></span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">sudo</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Attempt to gain admin privileges</span>',
         '<span class="text-terminal-blue inline-block min-w-[70px] max-w-[90px]">codex</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white text-sm">Browse content by type</span>',
@@ -379,7 +408,9 @@ export const handleCommand = async (
 
         // Format output for terminal display - single heading
         const output = [
-          `<span class="${tagColor} font-bold">━━━ Content Tagged with #${arg} (${filteredContent.length} items) ━━━</span>`,
+          `<span class="${tagColor}">━━━ CONTENT TAGGED WITH #${arg.toUpperCase()} (${
+            filteredContent.length
+          } ITEMS) ━━━</span>`,
           '',
         ];
 
@@ -429,7 +460,7 @@ export const handleCommand = async (
         } else if (subCommand === 'help') {
           // Handle help subcommand
           return [
-            '<span class="text-terminal-cyan font-bold">━━━ Codex Help ━━━</span>',
+            '<span class="text-terminal-cyan">━━━ CODEX HELP ━━━</span>',
             '<span class="text-terminal-blue inline-block min-w-[110px]">codex</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">Show content type menu</span>',
             '<span class="text-terminal-blue inline-block min-w-[110px]">codex all</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">List all content</span>',
             '<span class="text-terminal-blue inline-block min-w-[110px]">codex [type]</span><span class="text-terminal-yellow inline-block w-[18px] text-center">|</span><span class="text-terminal-white">List content of specific type</span>',
@@ -449,6 +480,17 @@ export const handleCommand = async (
 
       // Default to showing the main menu
       return await getContentTypeMenu();
+    case 'resume':
+      return displayResume();
+    case 'download':
+      if (arg === 'resume') {
+        // Open the PDF in a new tab when the command is executed
+        setTimeout(() => {
+          window.open('/weaver_resume.pdf', '_blank');
+        }, 100);
+        return handleResumeDownload();
+      }
+      return ['Usage: download resume'];
     case '':
       return [];
     default:
