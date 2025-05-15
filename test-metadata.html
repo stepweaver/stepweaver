@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metadata Tester</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .result {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      .meta-item {
+        margin-bottom: 10px;
+      }
+      pre {
+        white-space: pre-wrap;
+        background: #eee;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 16px;
+        background: #0070f3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0051a2;
+      }
+      h1 {
+        color: #333;
+      }
+      .og-preview {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 8px;
+      }
+      .og-preview img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Metadata Tester</h1>
+    <p>Enter your website URL to test the metadata:</p>
+    <div>
+      <input
+        type="text"
+        id="url-input"
+        style="width: 70%; padding: 8px"
+        placeholder="https://stepweaver.dev"
+        value="https://stepweaver.dev"
+      />
+      <button id="test-btn">Test Metadata</button>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <div class="og-preview" id="og-preview">
+      <h2>Open Graph Preview</h2>
+      <div id="preview-content"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById('test-btn')
+        .addEventListener('click', async () => {
+          const url = document.getElementById('url-input').value;
+          if (!url) return;
+
+          const resultDiv = document.getElementById('result');
+          resultDiv.innerHTML = '<p>Loading...</p>';
+
+          try {
+            // Using a CORS proxy for demonstration
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(
+              url
+            )}`;
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+
+            if (data.contents) {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(data.contents, 'text/html');
+
+              // Extract metadata
+              const metadata = {
+                title: getMetaContent(doc, 'title'),
+                description: getMetaContent(doc, 'description'),
+                ogTitle: getMetaContent(doc, 'og:title', 'property'),
+                ogDescription: getMetaContent(
+                  doc,
+                  'og:description',
+                  'property'
+                ),
+                ogImage: getMetaContent(doc, 'og:image', 'property'),
+                ogUrl: getMetaContent(doc, 'og:url', 'property'),
+                ogType: getMetaContent(doc, 'og:type', 'property'),
+                ogSiteName: getMetaContent(doc, 'og:site_name', 'property'),
+              };
+
+              // Display results
+              let html = '<h2>Metadata Results</h2>';
+
+              for (const [key, value] of Object.entries(metadata)) {
+                html += `
+              <div class="meta-item">
+                <strong>${key}:</strong> ${
+                  value || '<span style="color: #999">Not found</span>'
+                }
+              </div>
+            `;
+              }
+
+              // Display raw meta tags
+              html += '<h3>All Meta Tags</h3><pre>';
+              const allMeta = doc.querySelectorAll('meta');
+              allMeta.forEach((meta) => {
+                html += `${meta.outerHTML}\n`;
+              });
+              html += '</pre>';
+
+              resultDiv.innerHTML = html;
+
+              // Create OG preview
+              const previewDiv = document.getElementById('preview-content');
+              previewDiv.innerHTML = `
+            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 500px;">
+              ${
+                metadata.ogImage
+                  ? `<img src="${metadata.ogImage}" alt="OG Image" style="width: 100%;">`
+                  : ''
+              }
+              <div style="padding: 15px;">
+                <div style="color: #777; font-size: 14px;">${
+                  metadata.ogSiteName || url
+                }</div>
+                <div style="font-weight: bold; font-size: 16px; margin: 5px 0;">${
+                  metadata.ogTitle || metadata.title
+                }</div>
+                <div style="color: #333; font-size: 14px;">${
+                  metadata.ogDescription || metadata.description
+                }</div>
+              </div>
+            </div>
+          `;
+            } else {
+              resultDiv.innerHTML = '<p>Error loading URL</p>';
+            }
+          } catch (error) {
+            resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+          }
+        });
+
+      function getMetaContent(doc, name, attribute = 'name') {
+        if (name === 'title') {
+          const titleTag = doc.querySelector('title');
+          return titleTag ? titleTag.textContent : null;
+        }
+
+        const meta = doc.querySelector(`meta[${attribute}="${name}"]`);
+        return meta ? meta.getAttribute('content') : null;
+      }
+    </script>
+  </body>
+</html>

@@ -5,8 +5,6 @@ import NavWrap from '@/components/navigation/layout/NavWrap';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MatrixRain from '@/components/transition/MatrixRain';
-import { DefaultSeo } from 'next-seo';
-import SEO from '../next-seo.config';
 
 const ocrFont = localFont({
   src: './fonts/OCRA.woff',
@@ -22,11 +20,26 @@ const ibm3270 = localFont({
 
 export const metadata = {
   title: {
-    template: '%s | Stephen Weaver',
-    default: 'Stephen Weaver | Web Developer',
+    template: '%s | stepweaver',
+    default: 'stepweaver | Web Developer',
   },
-  description:
-    'Terminal-inspired portfolio of Stephen Weaver, web developer and University of Notre Dame business analyst',
+  description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://stepweaver.dev/',
+    siteName: 'stepweaver',
+    title: 'stepweaver | Web Developer',
+    description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
+    images: [
+      {
+        url: '/images/social-preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'Stephen Weaver Terminal Portfolio',
+      },
+    ],
+  },
   icons: {
     icon: [
       { url: '/favicon/favicon.ico' },

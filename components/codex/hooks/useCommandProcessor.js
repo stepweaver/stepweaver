@@ -10,26 +10,43 @@ export default function useCommandProcessor({
 }) {
   const toggleHashtag = useCallback(
     (tag) => {
-      if (tag === 'clear') {
+      const normalizedTag = tag.toLowerCase();
+      if (normalizedTag === 'clear') {
         setActiveHashtags([]);
         return;
       }
 
-      if (activeHashtags.includes(tag)) {
-        setActiveHashtags((prev) => prev.filter((t) => t !== tag));
+      // Find the correctly cased tag from allHashtags if it exists
+      const matchedTag = allHashtags.find(
+        (t) => t.toLowerCase() === normalizedTag
+      );
+      
+      if (!matchedTag) return; // Tag doesn't exist
+
+      // Find if already active (case-insensitive check)
+      const isActive = activeHashtags.some(
+        (t) => t.toLowerCase() === normalizedTag
+      );
+
+      if (isActive) {
+        setActiveHashtags((prev) => 
+          prev.filter((t) => t.toLowerCase() !== normalizedTag)
+        );
       } else {
-        setActiveHashtags((prev) => [...prev, tag]);
+        setActiveHashtags((prev) => [...prev, matchedTag]);
       }
 
       if (showTerminal && terminalRef.current?.executeCommand) {
-        terminalRef.current.executeCommand(`filter ${tag}`);
+        terminalRef.current.executeCommand(`filter ${matchedTag}`);
       }
     },
-    [activeHashtags, setActiveHashtags, showTerminal, terminalRef]
+    [activeHashtags, setActiveHashtags, showTerminal, terminalRef, allHashtags]
   );
 
   const processCommand = useCallback(
     (cmd, isNewCommand = false) => {
+      const normalizedCmd = cmd.toLowerCase();
+      
       // Define valid content types
       const contentTypes = [
         'all',
@@ -42,15 +59,15 @@ export default function useCommandProcessor({
       ];
 
       // When starting a new command (not a combination), reset filters first unless explicitly combining
-      if (isNewCommand && !cmd.includes('+')) {
+      if (isNewCommand && !normalizedCmd.includes('+')) {
         // Reset filters before applying new ones for a fresh start
         setActiveTypeFilter('all');
         setActiveHashtags([]);
       }
 
       // Check if command contains multiple parts (separated by '+')
-      if (cmd.includes('+')) {
-        const parts = cmd.split('+').map((part) => part.trim());
+      if (normalizedCmd.includes('+')) {
+        const parts = normalizedCmd.split('+').map((part) => part.trim());
         let hasSetType = false;
 
         // Process each part
@@ -60,52 +77,64 @@ export default function useCommandProcessor({
             setActiveTypeFilter(part);
             hasSetType = true;
           }
-          // If it's a hashtag
-          else if (allHashtags.includes(part)) {
-            if (!activeHashtags.includes(part)) {
-              setActiveHashtags((prev) => [...prev, part]);
+          // If it's a hashtag (case-insensitive check)
+          else {
+            const matchedTag = allHashtags.find(
+              (t) => t.toLowerCase() === part
+            );
+            if (matchedTag) {
+              const isActive = activeHashtags.some(
+                (t) => t.toLowerCase() === part
+              );
+              if (!isActive) {
+                setActiveHashtags((prev) => [...prev, matchedTag]);
+              }
             }
           }
         });
       }
       // Check if it's a full command
-      else if (cmd.startsWith('codex ')) {
-        const type = cmd.substring(6).trim();
+      else if (normalizedCmd.startsWith('codex ')) {
+        const type = normalizedCmd.substring(6).trim();
         if (contentTypes.includes(type)) {
           setActiveTypeFilter(type);
         }
       }
       // Check if it's a filter command
-      else if (cmd.startsWith('filter ')) {
-        const tag = cmd.substring(7).trim();
-        if (allHashtags.includes(tag)) {
-          toggleHashtag(tag);
-        }
+      else if (normalizedCmd.startsWith('filter ')) {
+        const tag = normalizedCmd.substring(7).trim();
+        toggleHashtag(tag);
       }
       // Check if it's just a content type
-      else if (contentTypes.includes(cmd)) {
-        setActiveTypeFilter(cmd);
+      else if (contentTypes.includes(normalizedCmd)) {
+        setActiveTypeFilter(normalizedCmd);
       }
       // Check if it's just a hashtag
-      else if (allHashtags.includes(cmd)) {
-        toggleHashtag(cmd);
-      }
-      // Check special commands
-      else if (cmd === 'clear' || cmd === 'reset') {
-        // Reset all filters
-        setActiveTypeFilter('all');
-        setActiveHashtags([]);
+      else {
+        const matchedTag = allHashtags.find(
+          (t) => t.toLowerCase() === normalizedCmd
+        );
+        if (matchedTag) {
+          toggleHashtag(normalizedCmd);
+        }
+        // Check special commands
+        else if (normalizedCmd === 'clear' || normalizedCmd === 'reset') {
+          // Reset all filters
+          setActiveTypeFilter('all');
+          setActiveHashtags([]);
+        }
       }
 
       // Always pass to terminal for visual feedback if visible
       if (showTerminal && terminalRef.current?.executeCommand) {
         // Translate abbreviated commands to full commands for terminal
-        if (contentTypes.includes(cmd) && !cmd.startsWith('codex')) {
-          terminalRef.current.executeCommand(`codex ${cmd}`);
-        } else if (allHashtags.includes(cmd) && !cmd.startsWith('filter')) {
-          terminalRef.current.executeCommand(`filter ${cmd}`);
+        if (contentTypes.includes(normalizedCmd) && !normalizedCmd.startsWith('codex')) {
+          terminalRef.current.executeCommand(`codex ${normalizedCmd}`);
+        } else if (allHashtags.some(t => t.toLowerCase() === normalizedCmd) && !normalizedCmd.startsWith('filter')) {
+          const matchedTag = allHashtags.find(t => t.toLowerCase() === normalizedCmd);
+          terminalRef.current.executeCommand(`filter ${matchedTag || normalizedCmd}`);
         } else {
-          terminalRef.current.executeCommand(cmd);
+          terminalRef.current.executeCommand(cmd); // Keep original casing for terminal display
         }
       }
     },
