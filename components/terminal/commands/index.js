@@ -124,13 +124,11 @@ const findAndOpenPost = async (searchQuery) => {
     const post = matchingPosts[0];
     const navigationPath = `codex/${post.type}/${post.slug}`;
 
-    // Add both data-open and data-auto-open to maximize chances of navigation working
+    // Use only data-auto-open for automatic navigation, remove the script tag approach
     return [
       `<span class="text-terminal-green">Found: "${post.title}"</span>`,
       `<span class="text-terminal-dimmed">Opening <span class="text-terminal-cyan cursor-pointer" data-open="${navigationPath}">${navigationPath}</span>...</span>`,
-      // Add multiple navigation options to increase the chance of it working
-      `<span data-auto-open="${navigationPath}" style="display:inline-block;">Auto-opening post...</span>`,
-      `<script>setTimeout(() => window.location.href = '/${navigationPath}', 1000);</script>`,
+      `<span data-auto-open="${navigationPath}" style="display:inline-block;">Navigating to post...</span>`,
     ];
   } else {
     // If multiple matches, show a list of options

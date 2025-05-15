@@ -117,7 +117,7 @@ export default function CodexPage() {
   };
 
   // Use command processor hook
-  const { toggleHashtag, processCommand } = useCommandProcessor({
+  const { toggleHashtag, processCommand, lastError } = useCommandProcessor({
     allHashtags,
     setActiveTypeFilter,
     setActiveHashtags,
@@ -159,10 +159,15 @@ export default function CodexPage() {
     // If it's an "open" command, make sure the terminal is visible
     if (cmd.toLowerCase().startsWith('open ')) {
       setShowTerminal(true);
-    }
 
-    // Process the command
-    processCommand(cmd, true);
+      // Add a slight delay to ensure terminal is fully rendered before sending the command
+      setTimeout(() => {
+        processCommand(cmd, true);
+      }, 300);
+    } else {
+      // Process other commands immediately
+      processCommand(cmd, true);
+    }
   };
 
   // Handle type filter button click
@@ -215,7 +220,7 @@ export default function CodexPage() {
           <p className='text-terminal-text mt-2'>
             Browse my collection of blog posts, podcasts, projects and more.
             <span className='block mt-1 text-terminal-dimmed text-sm'>
-              Try commands like{' '}
+              Try filter commands like{' '}
               <code className='text-terminal-green'>blog</code>,{' '}
               <code className='text-terminal-green ml-1'>project</code>,
               hashtags like <code className='text-terminal-green ml-1'>ai</code>
@@ -239,6 +244,7 @@ export default function CodexPage() {
         <CommandInput
           onExecuteCommand={handleExecuteCommand}
           placeholder='Try "blog", "ai", or "open my-post" to find posts directly'
+          error={lastError}
         />
 
         {/* Display loading or error state */}

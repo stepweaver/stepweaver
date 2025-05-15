@@ -1,9 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function CommandInput({ onExecuteCommand, placeholder }) {
+export default function CommandInput({ onExecuteCommand, placeholder, error }) {
   const [commandInput, setCommandInput] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Update error message when a new error is received
+  useEffect(() => {
+    setErrorMessage(error);
+    
+    // Clear error after 4 seconds
+    if (error) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,6 +48,11 @@ export default function CommandInput({ onExecuteCommand, placeholder }) {
           Run
         </button>
       </form>
+      {errorMessage && (
+        <div className='mt-2 text-terminal-red text-sm'>
+          {errorMessage}
+        </div>
+      )}
       <div className='h-px bg-terminal-green/20 mt-2'></div>
     </div>
   );

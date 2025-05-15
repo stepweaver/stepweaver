@@ -317,13 +317,12 @@ const Terminal = forwardRef((props, ref) => {
       // Get the first one and navigate to its path after a short delay
       const path = autoOpenElements[0].getAttribute('data-auto-open');
       if (path) {
-        // Use a longer delay to ensure the content is properly rendered
+        // Increase the delay to ensure the content is properly rendered before navigation
         const timer = setTimeout(() => {
           // Navigate to the post
+          console.log(`Auto-opening path: /${path}`);
           router.push(`/${path}`);
-          // Extra logging for debugging
-          console.log(`Navigating to: /${path}`);
-        }, 1200);
+        }, 1500); // Use a more consistent delay
         return () => clearTimeout(timer);
       }
     }
