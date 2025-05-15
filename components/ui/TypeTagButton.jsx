@@ -23,7 +23,7 @@ export default function TypeTagButton({ type, active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-2 py-0.5 text-sm rounded border h-6 inline-flex items-center justify-center cursor-pointer ${
+      className={`px-2 py-0.5 text-xs rounded border h-5 inline-flex items-center justify-center cursor-pointer ${
         active ? activeStyles[type] : typeStyles[type]
       }`}
     >
