@@ -48,3 +48,49 @@
   color: #ff00ff;
   text-shadow: 0 0 5px rgba(255, 0, 255, 0.8), 0 0 10px rgba(255, 0, 255, 0.4);
 }
+
+/* Update section styling for MDX content */
+.update-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--color-terminal-dimmed);
+  font-family: var(--font-ocr), monospace;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.update-header {
+  display: flex;
+  align-items: center;
+}
+
+.update-command {
+  color: var(--color-terminal-dimmed);
+}
+
+.update-date {
+  color: var(--color-terminal-green);
+}
+
+/* Animation for cursor blink */
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Terminal cursor */
+.terminal-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background-color: var(--color-terminal-green);
+  margin-left: 0.5rem;
+  animation: cursor-blink 1.2s infinite;
+  vertical-align: middle;
+}

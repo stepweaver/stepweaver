@@ -73,12 +73,16 @@ export default function PostCard({ type, content, onTagClick }) {
           </Link>
         </h3>
         <span className='hidden sm:block text-terminal-dimmed text-sm whitespace-nowrap flex-shrink-0 ml-4'>
-          {formatDate(content.date)}
+          {content.updated
+            ? `Updated: ${formatDate(content.updated)}`
+            : formatDate(content.date)}
         </span>
       </div>
       <p className='text-terminal-text mt-2 mb-2'>{content.description}</p>
       <span className='block sm:hidden text-terminal-dimmed text-sm whitespace-nowrap mb-3'>
-        {formatDate(content.date)}
+        {content.updated
+          ? `Updated: ${formatDate(content.updated)}`
+          : formatDate(content.date)}
       </span>
       <div className='flex flex-wrap gap-2'>
         {content.hashtags?.map((tag) => (

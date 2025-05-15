@@ -32,10 +32,14 @@ export default function Home() {
       if (!grouped[post.type]) grouped[post.type] = [];
       grouped[post.type].push(post);
     });
-    // Sort each group and pick the first
+    // Sort each group with updated date priority and pick the first
     return Object.entries(grouped)
       .map(([type, arr]) => {
-        arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+        arr.sort((a, b) => {
+          const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
+          const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
+          return dateB - dateA;
+        });
         return { type, content: arr[0] };
       })
       .filter((item) => item.content);

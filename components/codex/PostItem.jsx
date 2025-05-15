@@ -32,7 +32,9 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
           </div>
         </div>
         <div className='text-terminal-dimmed text-xs whitespace-nowrap'>
-          {formatDate(post.date)}
+          {post.updated
+            ? `Updated: ${formatDate(post.updated)}`
+            : formatDate(post.date)}
         </div>
       </div>
 

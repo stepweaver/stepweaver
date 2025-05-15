@@ -18,6 +18,7 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
@@ -38,6 +39,7 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
@@ -58,6 +60,7 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
@@ -78,6 +81,7 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
@@ -98,6 +102,7 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
@@ -118,13 +123,18 @@ export async function GET() {
           title: data.title,
           slug: file.replace(/\.mdx$/, ''),
           date: data.date,
+          updated: data.updated || null,
           description: data.excerpt,
           hashtags: data.hashtags || [],
         });
       }
     });
   }
-  // Sort posts by date descending
-  posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Sort posts by date descending (using updated date if available)
+  posts.sort((a, b) => {
+    const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
+    const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
+    return dateB - dateA;
+  });
   return Response.json(posts);
 }

@@ -3,6 +3,7 @@ import path from 'path';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import matter from 'gray-matter';
 import Post from '@/components/Post';
+import Update from '@/components/mdx/Update';
 
 const postComponents = {
   blog: Post,
@@ -30,6 +31,11 @@ export default async function Page({ params }) {
 
   const PostComponent = postComponents[type] || Post;
 
+  // MDX components with access to frontmatter
+  const mdxComponents = {
+    Update: () => <Update frontmatter={frontmatter} />,
+  };
+
   return (
     <div className='mt-8 flex flex-col items-center justify-center'>
       <PostComponent
@@ -40,7 +46,7 @@ export default async function Page({ params }) {
         hashtags={frontmatter.hashtags}
       >
         <div className='prose prose-invert max-w-none'>
-          <MDXRemote source={content} />
+          <MDXRemote source={content} components={mdxComponents} />
         </div>
       </PostComponent>
     </div>

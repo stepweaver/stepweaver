@@ -66,7 +66,12 @@ export default function CodexPage() {
 
   // Sort all posts by date descending
   const allPosts = useMemo(() => {
-    return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+    return [...posts].sort((a, b) => {
+      // Use updated date if available, otherwise use original date
+      const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
+      const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
+      return dateB - dateA;
+    });
   }, [posts]);
 
   // Get all unique hashtags for filter buttons
@@ -180,12 +185,12 @@ export default function CodexPage() {
             </span>
           </p>
         </div>
-          <button
-            onClick={toggleTerminal}
-            className='mb-4 px-2.5 h-5 text-xs bg-terminal-green/10 border border-terminal-green text-terminal-green rounded hover:bg-terminal-green/20 transition-colors cursor-pointer'
-          >
-            {showTerminal ? 'Hide Terminal' : 'Show Terminal'}
-          </button>
+        <button
+          onClick={toggleTerminal}
+          className='mb-4 px-2.5 h-5 text-xs bg-terminal-green/10 border border-terminal-green text-terminal-green rounded hover:bg-terminal-green/20 transition-colors cursor-pointer'
+        >
+          {showTerminal ? 'Hide Terminal' : 'Show Terminal'}
+        </button>
 
         {/* Command input component */}
         <CommandInput
