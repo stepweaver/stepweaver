@@ -33,7 +33,7 @@ export const getGlowStyle = (type) => {
     website: '255, 214, 0', // terminal-yellow
     article: '255, 80, 80', // terminal-red
     tool: '80, 140, 255', // terminal-blue
-    project: '255, 85, 255', // terminal-magenta
+    project: '255, 85, 255', // fluorescent magenta #ff55ff
   };
 
   const color = glowColors[type] || '0, 255, 65'; // Default to green
@@ -51,7 +51,7 @@ export const getTypeColorValue = (type) => {
     website: 'rgb(255, 214, 0)', // terminal-yellow
     article: 'rgb(255, 80, 80)', // terminal-red
     tool: 'rgb(80, 140, 255)', // terminal-blue
-    project: 'rgb(255, 85, 255)', // terminal-magenta
+    project: 'rgb(255, 85, 255)', // fluorescent magenta #ff55ff
     all: 'rgb(0, 255, 65)', // Default to green
   };
 

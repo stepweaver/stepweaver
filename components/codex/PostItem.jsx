@@ -7,6 +7,17 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredTag, setHoveredTag] = useState(null);
   const typeColor = getTypeColor(post.type);
+  const typeColorValue = getTypeColorValue(post.type);
+
+  // More subtle hover style that's still readable
+  const getSubtleHoverStyle = () => {
+    return isHovered
+      ? {
+          color: typeColorValue,
+          fontWeight: 'medium',
+        }
+      : {};
+  };
 
   return (
     <a
@@ -27,13 +38,13 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
             </span>
             <span
               className='text-terminal-dimmed mx-2 font-normal transition-all duration-200'
-              style={isHovered ? getGlowStyle(post.type) : {}}
+              style={getSubtleHoverStyle()}
             >
               -
             </span>
             <span
               className='text-terminal-text font-normal transition-all duration-200'
-              style={isHovered ? getGlowStyle(post.type) : {}}
+              style={getSubtleHoverStyle()}
             >
               {post.description}
             </span>
@@ -41,7 +52,7 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
         </div>
         <div
           className='text-terminal-dimmed text-xs whitespace-nowrap transition-all duration-200'
-          style={isHovered ? getGlowStyle(post.type) : {}}
+          style={isHovered ? { color: typeColorValue } : {}}
         >
           {post.updated
             ? `Updated: ${formatDate(post.updated)}`
