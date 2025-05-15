@@ -39,7 +39,10 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
             </span>
           </div>
         </div>
-        <div className='text-terminal-dimmed text-xs whitespace-nowrap'>
+        <div
+          className='text-terminal-dimmed text-xs whitespace-nowrap transition-all duration-200'
+          style={isHovered ? getGlowStyle(post.type) : {}}
+        >
           {post.updated
             ? `Updated: ${formatDate(post.updated)}`
             : formatDate(post.date)}
