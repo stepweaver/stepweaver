@@ -16,13 +16,13 @@ export default function Update({ frontmatter }) {
   const formattedDate = new Date(date).toISOString().split('T')[0];
   const bracketDate = `[${formattedDate}]`;
 
-  // Create the full command with spacing guaranteed
-  const commandPrefix = '$ git commit -m "update ';
-
   return (
     <div className='update-section'>
       <div className='update-header'>
-        <span className='update-command'>{commandPrefix}</span>
+        {/* Split into separate elements for more explicit control */}
+        <span className='update-command'>$ git commit -m "update</span>
+        {/* This is an explicit space character */}
+        <span className='update-command'>&nbsp;</span>
         <span className='update-date'>{bracketDate}</span>
         <span className='update-command'>"</span>
       </div>
