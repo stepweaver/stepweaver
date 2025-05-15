@@ -25,8 +25,16 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
             >
               {post.title}
             </span>
-            <span className='text-terminal-dimmed mx-2 font-normal'>-</span>
-            <span className='text-terminal-text font-normal'>
+            <span
+              className='text-terminal-dimmed mx-2 font-normal transition-all duration-200'
+              style={isHovered ? getGlowStyle(post.type) : {}}
+            >
+              -
+            </span>
+            <span
+              className='text-terminal-text font-normal transition-all duration-200'
+              style={isHovered ? getGlowStyle(post.type) : {}}
+            >
               {post.description}
             </span>
           </div>
