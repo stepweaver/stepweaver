@@ -27,6 +27,9 @@ module.exports = {
           orange: 'var(--color-terminal-orange)',
         },
       },
+      backdropBlur: {
+        xs: '2px',
+      },
       fontFamily: {
         ocr: ['var(--font-ocr)'],
         ibm: ['var(--font-ibm)'],

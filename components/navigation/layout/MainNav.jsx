@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import styles from '@/styles/terminal-ui.module.css';
 
 export default function MainNav() {
   const pathname = usePathname();
@@ -50,7 +51,7 @@ export default function MainNav() {
             rel={item.external ? 'noopener noreferrer' : ''}
             className={`flex items-center text-md font-ibm ${
               pathname === item.path && !item.external
-                ? 'active-link'
+                ? styles.activeLink
                 : 'text-terminal-text hover:text-terminal-green'
             }`}
           >

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import styles from '@/styles/terminal-ui.module.css';
 
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function MobileNav() {
   ];
 
   return (
-    <div className='md:hidden fixed right-4 z-50 backdrop-blur-md bg-terminal-bg/80'>
+    <div className='md:hidden fixed right-4 z-50 backdrop-blur-md bg-terminal/80'>
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -34,12 +35,12 @@ export default function MobileNav() {
       )}
 
       {isOpen && (
-        <div className='fixed top-6 right-4 w-56 terminal-dark'>
-          <div className='terminal-header'>
+        <div className={`fixed top-6 right-4 w-56 ${styles.terminalDark}`}>
+          <div className={styles.terminalHeader}>
             <div className='text-xl font-ibm text-terminal-green'>~/menu</div>
 
             <div
-              className='terminal-button bg-terminal-red cursor-pointer'
+              className={`${styles.terminalButton} bg-terminal-red cursor-pointer`}
               onClick={() => setIsOpen(false)}
             ></div>
           </div>
@@ -54,7 +55,7 @@ export default function MobileNav() {
                     rel={item.external ? 'noopener noreferrer' : ''}
                     className={`${
                       pathname === item.path && !item.external
-                        ? 'active-link'
+                        ? styles.activeLink
                         : 'text-terminal-text hover:text-terminal-green'
                     }`}
                   >
