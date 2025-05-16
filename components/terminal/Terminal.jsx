@@ -354,12 +354,12 @@ const Terminal = forwardRef((props, ref) => {
               </span>
             ) : line.startsWith('<span') || line.startsWith('<div') ? (
               <pre
-                className={`whitespace-pre-wrap leading-tight font-ibm ${styles.crtText}`}
+                className={`${styles.terminalNoWrap} leading-tight font-ibm ${styles.crtText}`}
                 dangerouslySetInnerHTML={{ __html: line }}
               />
             ) : (
               <pre
-                className={`whitespace-pre-wrap leading-tight font-ibm ${styles.crtText}`}
+                className={`${styles.terminalNoWrap} leading-tight font-ibm ${styles.crtText}`}
               >
                 {line}
               </pre>

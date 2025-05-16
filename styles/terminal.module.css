@@ -313,3 +313,12 @@
     opacity: 0;
   }
 }
+
+/* Terminal line with no wrapping and ellipsis */
+.terminalNoWrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
