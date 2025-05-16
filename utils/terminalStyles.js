@@ -1,9 +1,11 @@
 // Terminal styling utility functions
 export const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return `[${date.getFullYear()}-${date.toLocaleString('en-US', {
-    month: 'short',
-  })}-${String(date.getDate()).padStart(2, '0')}]`;
+  return `[${date.getFullYear()}-${date
+    .toLocaleString('en-US', {
+      month: 'short',
+    })
+    .toUpperCase()}-${String(date.getDate()).padStart(2, '0')}]`;
 };
 
 export const getTypeColor = (type) => {

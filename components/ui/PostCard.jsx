@@ -4,12 +4,12 @@ import Link from 'next/link';
 
 export default function PostCard({ type, content, onTagClick }) {
   const typeStyles = {
-    blog: 'border-terminal-green text-terminal-green',
-    podcast: 'border-terminal-purple text-terminal-purple',
-    website: 'border-terminal-yellow text-terminal-yellow',
-    article: 'border-terminal-red text-terminal-red',
-    tool: 'border-terminal-blue text-terminal-blue',
-    project: 'border-terminal-magenta text-terminal-magenta',
+    blog: 'text-terminal-green',
+    podcast: 'text-terminal-purple',
+    website: 'text-terminal-yellow',
+    article: 'text-terminal-red',
+    tool: 'text-terminal-blue',
+    project: 'text-terminal-magenta',
   };
 
   const getPostUrl = () => {
@@ -50,56 +50,72 @@ export default function PostCard({ type, content, onTagClick }) {
     }
   };
 
+  // Enhanced glow effect with more intensity
+  const getEnhancedGlowStyle = (type) => {
+    switch (type) {
+      case 'blog':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-green)] hover:brightness-125';
+      case 'podcast':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-purple)] hover:brightness-125';
+      case 'website':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-yellow)] hover:brightness-125';
+      case 'article':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-red)] hover:brightness-125';
+      case 'tool':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-blue)] hover:brightness-125';
+      case 'project':
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-magenta)] hover:brightness-125';
+      default:
+        return 'hover:drop-shadow-[0_0_12px_var(--color-terminal-green)] hover:brightness-125';
+    }
+  };
+
   return (
-    <div
-      className={`border-l-2 pl-3 mb-4 bg-terminal/20 ${
-        typeStyles[type] || ''
-      }`}
-    >
-      <div className='sm:flex sm:justify-between sm:items-start'>
-        <h3
-          className={`font-ibm text-lg ${
-            typeStyles[type]?.split(' ')[1] || ''
-          }`}
+    <div className='mb-3 py-1'>
+      <div className='flex justify-between items-center'>
+        <div className='flex items-center'>
+          <h3 className={`font-ibm ${typeStyles[type] || ''}`}>
+            <Link
+              href={getPostUrl()}
+              className={`
+                transition-colors duration-150 hover:underline
+                ${getHashtagGlowStyle(type)}
+              `}
+            >
+              {content.title}
+            </Link>
+          </h3>
+        </div>
+        <span
+          className='text-terminal-dimmed whitespace-nowrap ml-4'
+          style={{ fontSize: '16px' }}
         >
-          <Link
-            href={getPostUrl()}
-            className={`
-              transition-colors duration-150 hover:underline
-              ${getHashtagGlowStyle(type)}
-            `}
-          >
-            {content.title}
-          </Link>
-        </h3>
-        <span className='hidden sm:block text-terminal-dimmed text-sm whitespace-nowrap flex-shrink-0 ml-4'>
           {content.updated
-            ? `Updated: ${formatDate(content.updated)}`
+            ? formatDate(content.updated)
             : formatDate(content.date)}
         </span>
       </div>
-      <p className='text-terminal-text mt-2 mb-2'>{content.description}</p>
-      <span className='block sm:hidden text-terminal-dimmed text-sm whitespace-nowrap mb-3'>
-        {content.updated
-          ? `Updated: ${formatDate(content.updated)}`
-          : formatDate(content.date)}
-      </span>
-      <div className='flex flex-wrap gap-2'>
-        {content.hashtags?.map((tag) => (
-          <span
-            key={tag}
-            className={`text-sm cursor-pointer transition-all duration-200 ${
-              typeStyles[type]?.split(' ')[1] || ''
-            } ${getHashtagGlowStyle(type)}`}
-            onClick={(e) => {
-              e.preventDefault();
-              onTagClick && onTagClick(tag);
-            }}
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
+
+      <p className='text-terminal-text text-sm ml-0'>{content.description}</p>
+
+      {content.hashtags?.length > 0 && (
+        <div className='flex flex-wrap gap-2 ml-0 mt-1'>
+          {content.hashtags.map((tag) => (
+            <span
+              key={tag}
+              className={`text-xs cursor-pointer transition-all duration-200 ${
+                typeStyles[type] || ''
+              } ${getEnhancedGlowStyle(type)}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onTagClick && onTagClick(tag);
+              }}
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,7 @@
 'use client';
 
-/**
- * Terminal-styled update component for MDX content
- * Displays the update date in terminal format
- */
+import styles from '@/styles/mdx-components.module.css';
+
 export default function Update({ frontmatter }) {
   if (!frontmatter?.updated) {
     return null;
@@ -12,19 +10,19 @@ export default function Update({ frontmatter }) {
   // Get updated date from frontmatter
   const date = frontmatter.updated;
 
-  // Format as [YYYY-MM-DD]
-  const formattedDate = new Date(date).toISOString().split('T')[0];
-  const bracketDate = `[${formattedDate}]`;
+  // Format date as YYYY-MMM-DD
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = dateObj
+    .toLocaleString('en-US', { month: 'short' })
+    .toUpperCase();
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const formattedDate = `${year}-${month}-${day}`;
 
   return (
-    <div className='update-section'>
-      <div className='update-header'>
-        {/* Split into separate elements for more explicit control */}
-        <span className='update-command'>$ git commit -m "update</span>
-        {/* This is an explicit space character */}
-        <span className='update-command'>&nbsp;</span>
-        <span className='update-date'>{bracketDate}</span>
-        <span className='update-command'>"</span>
+    <div className={styles.updateSection}>
+      <div className='flex justify-end'>
+        <span className={styles.updateDate}>[{formattedDate}]</span>
       </div>
     </div>
   );

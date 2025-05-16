@@ -103,6 +103,45 @@ const Terminal = forwardRef((props, ref) => {
     navigateHistory,
   } = useCommandHistory();
 
+  // Create refs for pre elements to check overflow
+  const preRefs = useRef({});
+
+  // Check for overflow and add custom ellipsis
+  useEffect(() => {
+    // Function to check overflow and update classes
+    const checkOverflow = () => {
+      Object.keys(preRefs.current).forEach((key) => {
+        const el = preRefs.current[key];
+        if (el) {
+          // Set custom ellipsis if overflowing
+          if (el.offsetWidth < el.scrollWidth) {
+            el.classList.add(styles.terminalEllipsis);
+          } else {
+            el.classList.remove(styles.terminalEllipsis);
+          }
+        }
+      });
+    };
+
+    // Initial check
+    checkOverflow();
+
+    // Add resize listener to handle window size changes
+    window.addEventListener('resize', checkOverflow);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [lines]);
+
+  // Add a ref to a pre element
+  const addPreRef = (id, el) => {
+    if (el) {
+      preRefs.current[id] = el;
+    }
+  };
+
   // Expose methods to parent components
   useImperativeHandle(ref, () => ({
     // Execute a command programmatically
@@ -354,11 +393,13 @@ const Terminal = forwardRef((props, ref) => {
               </span>
             ) : line.startsWith('<span') || line.startsWith('<div') ? (
               <pre
+                ref={(el) => addPreRef(`html-${i}`, el)}
                 className={`${styles.terminalNoWrap} leading-tight font-ibm ${styles.crtText}`}
                 dangerouslySetInnerHTML={{ __html: line }}
               />
             ) : (
               <pre
+                ref={(el) => addPreRef(`text-${i}`, el)}
                 className={`${styles.terminalNoWrap} leading-tight font-ibm ${styles.crtText}`}
               >
                 {line}

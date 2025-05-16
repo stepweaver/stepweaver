@@ -322,3 +322,36 @@
   max-width: 100%;
   display: block;
 }
+
+/* Custom green terminal ellipsis */
+.terminalEllipsis {
+  position: relative;
+  text-overflow: clip;
+}
+
+.terminalEllipsis::after {
+  content: '...';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding-left: 5px;
+  background-color: var(--color-terminal-dark);
+  color: var(--color-terminal-green);
+}
+
+/* Setting ellipsis color using mask technique */
+@supports (-webkit-mask-image: none) or (mask-image: none) {
+  .terminalNoWrap {
+    text-overflow: clip;
+    position: relative;
+  }
+
+  .terminalNoWrap.overflowing::after {
+    content: '...';
+    position: absolute;
+    right: 0;
+    color: var(--color-terminal-green);
+    background-color: var(--color-terminal-dark);
+    padding-left: 4px;
+  }
+}

@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import styles from '@/styles/terminal-ui.module.css';
 
 export default function Header() {
   const pathname = usePathname();
@@ -51,19 +52,18 @@ export default function Header() {
           <div className='w-full overflow-x-auto'>
             <div className='font-ibm text-2xl flex items-center justify-center whitespace-nowrap overflow-hidden w-full'>
               <span
-                className={`lambda-symbol mr-1 ${
+                className={`${styles.lambdaSymbol} mr-1 ${
                   isGlitching
-                    ? 'lambda-glitching animate-glitch'
-                    : 'lambda-normal'
+                    ? styles.lambdaGlitching + ' animate-glitch'
+                    : styles.lambdaNormal
                 }`}
               >
                 λ
               </span>
               <span className='text-terminal-green'>stepweaver</span>
               <span className='text-terminal-green break-all md:break-normal ml-0 md:ml-0 truncate max-w-[40vw] sm:max-w-[60vw]'>
-                {formatPath()}
+                {formatPath()}<span className='ml-1 text-terminal-green animate-blink'>_</span>
               </span>
-              <span className='ml-1 text-terminal-green animate-blink'>_</span>
             </div>
           </div>
 

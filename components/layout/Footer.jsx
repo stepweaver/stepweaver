@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import styles from '@/styles/terminal-ui.module.css';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -30,10 +31,10 @@ export default function Footer() {
           <span>
             echo &quot;© {year}{' '}
             <span
-              className={`lambda-symbol ${
+              className={`${styles.lambdaSymbol} ${
                 isGlitching
-                  ? 'lambda-glitching animate-glitch'
-                  : 'lambda-normal'
+                  ? styles.lambdaGlitching + ' animate-glitch'
+                  : styles.lambdaNormal
               }`}
             >
               λ

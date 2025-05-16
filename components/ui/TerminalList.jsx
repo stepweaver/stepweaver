@@ -27,9 +27,11 @@ export default function TerminalList({ posts, activeTags = [] }) {
   // Format date as [YYYY-MMM-DD]
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return `${date.getFullYear()}-${date.toLocaleString('en-US', {
-      month: 'short',
-    })}-${String(date.getDate()).padStart(2, '0')}`;
+    return `[${date.getFullYear()}-${date
+      .toLocaleString('en-US', {
+        month: 'short',
+      })
+      .toUpperCase()}-${String(date.getDate()).padStart(2, '0')}]`;
   };
 
   const typeClasses = {
@@ -76,7 +78,10 @@ export default function TerminalList({ posts, activeTags = [] }) {
 
               {/* Right side: date and hashtags */}
               <div className='flex flex-col items-end flex-shrink-0'>
-                <span className='text-terminal-dimmed text-xs'>
+                <span
+                  className='text-terminal-dimmed'
+                  style={{ fontSize: '16px' }}
+                >
                   {formatDate(post.date)}
                 </span>
 

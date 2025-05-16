@@ -33,9 +33,11 @@ const fetchContent = async () => {
 const formatContentItem = (item, index) => {
   // Format date as [YYYY-MMM-DD]
   const date = new Date(item.date);
-  const formattedDate = `[${date.getFullYear()}-${date.toLocaleString('en-US', {
-    month: 'short',
-  })}-${String(date.getDate()).padStart(2, '0')}]`;
+  const formattedDate = `[${date.getFullYear()}-${date
+    .toLocaleString('en-US', {
+      month: 'short',
+    })
+    .toUpperCase()}-${String(date.getDate()).padStart(2, '0')}]`;
 
   // Get color based on content type
   let typeColor;

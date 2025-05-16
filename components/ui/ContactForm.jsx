@@ -73,12 +73,9 @@ export default function Contact() {
     }
   };
 
-  const formattedDate =
-    new Date().getFullYear() +
-    '-' +
-    new Date().toLocaleString('en-US', { month: 'short' }).toUpperCase() +
-    '-' +
-    String(new Date().getDate()).padStart(2, '0');
+  const formattedDate = `[${new Date().getFullYear()}-${new Date()
+    .toLocaleString('en-US', { month: 'short' })
+    .toUpperCase()}-${String(new Date().getDate()).padStart(2, '0')}]`;
 
   return (
     <div className='space-y-6 sm:space-y-8'>

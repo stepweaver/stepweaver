@@ -3,7 +3,7 @@
 import Terminal from '@/components/terminal/Terminal';
 import TerminalWindow from '@/components/ui/TerminalWindow';
 import { useEffect, useState } from 'react';
-import PostCard from '@/components/ui/PostCard';
+import PostItem from '@/components/ui/PostItem';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -45,6 +45,12 @@ export default function Home() {
       .filter((item) => item.content);
   };
 
+  // Optional: For tag filtering if implemented later
+  const handleTagClick = (tag) => {
+    // For future implementation - could navigate to /codex?tag=tagName
+    console.log('Tag clicked:', tag);
+  };
+
   return (
     <div className='space-y-8 mt-4'>
       <div className='border-l-2 border-terminal-green pl-5'>
@@ -65,19 +71,23 @@ export default function Home() {
         </TerminalWindow>
       </div>
       <div className='mt-8'>
-        <h3 className='text-terminal-green text-xl mb-4 border-terminal-green pl-5'>
-          # LATEST POSTS<span className='animate-blink'>_</span>
+        <h3 className='text-terminal-green text-xl mb-3 flex items-center'>
+          <span className='mr-2'>#</span>LATEST POSTS
+          <span className='animate-blink ml-1'>_</span>
         </h3>
         {loading ? (
           <div className='text-terminal-dimmed'>Loading posts...</div>
         ) : (
-          mostRecentByType().map((item) => (
-            <PostCard
-              key={`${item.type}-${item.content.slug}`}
-              type={item.type}
-              content={item.content}
-            />
-          ))
+          <div className='border-t border-terminal-dimmed/30 pt-2'>
+            {mostRecentByType().map((item) => (
+              <PostItem
+                key={`${item.type}-${item.content.slug}`}
+                type={item.type}
+                content={item.content}
+                onTagClick={handleTagClick}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

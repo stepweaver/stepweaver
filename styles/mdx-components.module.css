@@ -1,0 +1,14 @@
+/* MDX Components Styling */
+
+/* Update component styling */
+.updateSection {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-terminal-dimmed);
+  font-family: var(--font-ocr), monospace;
+}
+
+.updateDate {
+  color: var(--color-terminal-dimmed);
+  font-size: 16px;
+}

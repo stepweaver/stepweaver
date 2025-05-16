@@ -11,11 +11,9 @@ export default function TerminalWindow({
   // Format the current date if lastUpdated is not provided
   const formattedDate =
     lastUpdated ||
-    new Date().getFullYear() +
-      '-' +
-      new Date().toLocaleString('en-US', { month: 'short' }).toUpperCase() +
-      '-' +
-      String(new Date().getDate()).padStart(2, '0');
+    `[${new Date().getFullYear()}-${new Date()
+      .toLocaleString('en-US', { month: 'short' })
+      .toUpperCase()}-${String(new Date().getDate()).padStart(2, '0')}]`;
 
   return (
     <div className={`${styles.container} ${styles.terminalWindowShadow}`}>

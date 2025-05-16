@@ -1,3 +1,5 @@
+import formatDate from '@/utils/formatDate';
+
 export default function Post({
   type,
   title,
@@ -99,14 +101,61 @@ export default function Post({
   const typeInfo = getTypeInfo(type);
   const hashtagStyle = getHashtagStyle(type);
 
+  // Format the date properly using our utility
+  const formattedDate = date ? formatDate(date) : null;
+
   return (
     <article className='max-w-3xl px-2 bg-terminal/20'>
-      <header className='mb-6'>
-        <h1 className='text-3xl text-terminal-green mb-2 font-ibm'>{title}</h1>
-        {date && <p className='text-terminal-dimmed text-sm mb-2'>[{date}]</p>}
-        {excerpt && <h2 className='text-terminal-text mb-4'>{excerpt}</h2>}
+      <header
+        className='mb-8 border-l-2 pl-4'
+        style={{
+          borderColor: `var(--color-${
+            type === 'blog'
+              ? 'terminal-green'
+              : type === 'podcast'
+              ? 'terminal-purple'
+              : type === 'website'
+              ? 'terminal-yellow'
+              : type === 'article'
+              ? 'terminal-red'
+              : type === 'tool'
+              ? 'terminal-blue'
+              : 'terminal-magenta'
+          })`,
+        }}
+      >
+        {/* Type & Date line */}
+        <div className='flex items-center justify-between mb-4'>
+          <div
+            className={`inline-block px-2 py-0.5 rounded ${typeInfo.class
+              .replace('bg-terminal-green/20', 'bg-terminal-green/10')
+              .replace('bg-terminal-purple/20', 'bg-terminal-purple/10')
+              .replace('bg-terminal-yellow/20', 'bg-terminal-yellow/10')
+              .replace('bg-terminal-red/20', 'bg-terminal-red/10')
+              .replace('bg-terminal-blue/20', 'bg-terminal-blue/10')
+              .replace('bg-terminal-magenta/20', 'bg-terminal-magenta/10')}`}
+          >
+            <span className='mr-2'>{typeInfo.icon}</span>
+            <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+          </div>
+          {formattedDate && (
+            <div className='text-terminal-dimmed' style={{ fontSize: '16px' }}>
+              {formattedDate}
+            </div>
+          )}
+        </div>
+
+        {/* Title */}
+        <h1 className={`text-3xl ${hashtagStyle} mb-4 font-ibm`}>{title}</h1>
+
+        {/* Excerpt */}
+        {excerpt && (
+          <h2 className='text-terminal-text mb-4 text-lg'>{excerpt}</h2>
+        )}
+
+        {/* Hashtags */}
         {tagArray && tagArray.length > 0 && (
-          <div className='flex flex-wrap gap-2 mb-4'>
+          <div className='flex flex-wrap gap-2 mb-0 mt-4'>
             {tagArray.map((tag, index) => (
               <a
                 key={index}
@@ -123,7 +172,7 @@ export default function Post({
         )}
       </header>
 
-      <div className='w-full border-b border-dashed border-terminal-dimmed'></div>
+      <div className='w-full border-b border-dashed border-terminal-dimmed mb-6'></div>
       <section className='prose prose-invert prose-p:my-6 prose-p:leading-relaxed prose-headings:mt-8 prose-headings:mb-4 max-w-none text-terminal-text'>
         {children}
       </section>

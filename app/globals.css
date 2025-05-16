@@ -1,7 +1,9 @@
+/* Base imports for global styles */
 @import 'tailwindcss';
 @import '../styles/variables.css';
 @import '../styles/crt-effects.css';
-@import '../styles/terminal-components.css';
+
+/* Terminal components should be imported as CSS modules where needed */
 
 /* Base styles */
 body {

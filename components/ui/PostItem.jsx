@@ -1,13 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { getGlowStyle, getTypeColorValue } from '@/utils/terminalStyles';
+import {
+  getGlowStyle,
+  getTypeColorValue,
+  getTypeColor,
+} from '@/utils/terminalStyles';
+import formatDate from '@/utils/formatDate';
+import Link from 'next/link';
 
-export default function PostItem({ post, formatDate, getTypeColor }) {
+// This is an adapter component that makes PostItem work as a drop-in replacement for PostCard
+export default function PostItem({ type, content, onTagClick }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredTag, setHoveredTag] = useState(null);
-  const typeColor = getTypeColor(post.type);
-  const typeColorValue = getTypeColorValue(post.type);
+  const typeColor = getTypeColor(type);
+  const typeColorValue = getTypeColorValue(type);
 
   // More subtle hover style that's still readable
   const getSubtleHoverStyle = () => {
@@ -19,9 +26,15 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
       : {};
   };
 
+  // Create a post object from the content and type to match PostItem's API
+  const post = {
+    ...content,
+    type: type,
+  };
+
   return (
-    <a
-      href={`/codex/${post.type}/${post.slug}`}
+    <Link
+      href={`/codex/${type}/${content.slug}`}
       className='block py-0.5 px-2 rounded-sm'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -32,9 +45,9 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
           <div className='truncate'>
             <span
               className={`text-${typeColor} font-medium transition-all duration-200`}
-              style={isHovered ? getGlowStyle(post.type) : {}}
+              style={isHovered ? getGlowStyle(type) : {}}
             >
-              {post.title}
+              {content.title}
             </span>
             <span
               className='text-terminal-dimmed mx-2 font-normal transition-all duration-200'
@@ -46,7 +59,7 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
               className='text-terminal-text font-normal transition-all duration-200'
               style={getSubtleHoverStyle()}
             >
-              {post.description}
+              {content.description}
             </span>
           </div>
         </div>
@@ -58,32 +71,35 @@ export default function PostItem({ post, formatDate, getTypeColor }) {
               : { fontSize: '16px' }
           }
         >
-          {post.updated
-            ? `Updated: ${formatDate(post.updated)}`
-            : formatDate(post.date)}
+          {content.updated
+            ? `Updated: ${formatDate(content.updated)}`
+            : formatDate(content.date)}
         </div>
       </div>
 
       {/* Hashtags on second line (if any) */}
-      {post.hashtags && post.hashtags.length > 0 && (
+      {content.hashtags && content.hashtags.length > 0 && (
         <div className='text-xs text-terminal-dimmed ml-4 mt-0.5'>
-          {post.hashtags.map((tag, i) => (
+          {content.hashtags.map((tag, i) => (
             <span
               key={tag}
-              className='transition-colors duration-200'
+              className='transition-colors duration-200 hover:drop-shadow-[0_0_12px_var(--color-terminal-green)] hover:brightness-125'
               style={{
                 marginLeft: i > 0 ? '0.25rem' : '0',
-                color:
-                  hoveredTag === tag ? getTypeColorValue(post.type) : 'inherit',
+                color: hoveredTag === tag ? getTypeColorValue(type) : 'inherit',
               }}
               onMouseEnter={() => setHoveredTag(tag)}
               onMouseLeave={() => setHoveredTag(null)}
+              onClick={(e) => {
+                e.preventDefault();
+                onTagClick && onTagClick(tag);
+              }}
             >
               #{tag}
             </span>
           ))}
         </div>
       )}
-    </a>
+    </Link>
   );
 }
