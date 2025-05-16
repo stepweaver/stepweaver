@@ -106,6 +106,9 @@ const Terminal = forwardRef((props, ref) => {
   // Create refs for pre elements to check overflow
   const preRefs = useRef({});
 
+  // Add this ref at the top of your Terminal component
+  const hasNavigated = useRef(false);
+
   // Check for overflow and add custom ellipsis
   useEffect(() => {
     // Function to check overflow and update classes
@@ -352,17 +355,15 @@ const Terminal = forwardRef((props, ref) => {
     // Find any auto-open elements that were added in the latest render
     const autoOpenElements =
       containerRef.current?.querySelectorAll('[data-auto-open]');
-    if (autoOpenElements && autoOpenElements.length > 0) {
-      // Get the first one and navigate to its path after a short delay
+    if (
+      autoOpenElements &&
+      autoOpenElements.length > 0 &&
+      !hasNavigated.current
+    ) {
       const path = autoOpenElements[0].getAttribute('data-auto-open');
       if (path) {
-        // Increase the delay to ensure the content is properly rendered before navigation
-        const timer = setTimeout(() => {
-          // Navigate to the post
-          console.log(`Auto-opening path: /${path}`);
-          router.push(`/${path}`);
-        }, 1500); // Use a more consistent delay
-        return () => clearTimeout(timer);
+        hasNavigated.current = true;
+        // Navigation...
       }
     }
   }, [lines, router]);
