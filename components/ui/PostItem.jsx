@@ -9,7 +9,6 @@ import {
 import formatDate from '@/utils/formatDate';
 import Link from 'next/link';
 
-// This is an adapter component that makes PostItem work as a drop-in replacement for PostCard
 export default function PostItem({ type, content, onTagClick }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredTag, setHoveredTag] = useState(null);

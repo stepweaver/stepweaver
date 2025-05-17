@@ -1,12 +1,8 @@
 // Terminal styling utility functions
-export const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return `[${date.getFullYear()}-${date
-    .toLocaleString('en-US', {
-      month: 'short',
-    })
-    .toUpperCase()}-${String(date.getDate()).padStart(2, '0')}]`;
-};
+import formatDate from './formatDate'; // Import the unified formatter
+
+// Export it so other modules can use it through terminalStyles
+export { formatDate };
 
 export const getTypeColor = (type) => {
   switch (type) {

@@ -33,7 +33,7 @@ export default async function Page({ params }) {
 
   // MDX components with access to frontmatter
   const mdxComponents = {
-    Update: () => <Update frontmatter={frontmatter} />,
+    Update: (props) => <Update frontmatter={frontmatter} {...props} />,
   };
 
   return (
