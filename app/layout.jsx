@@ -21,7 +21,7 @@ const ibm3270 = localFont({
 export const metadata = {
   title: {
     template: '%s | stepweaver',
-    default: 'stepweaver | Web Developer',
+    default: 'Stephen Weaver | Web Developer',
   },
   description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
   openGraph: {
@@ -29,7 +29,7 @@ export const metadata = {
     locale: 'en_US',
     url: 'https://stepweaver.dev/',
     siteName: 'stepweaver',
-    title: 'stepweaver | Web Developer',
+    title: 'Stephen Weaver | Web Developer',
     description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
     images: [
       {
