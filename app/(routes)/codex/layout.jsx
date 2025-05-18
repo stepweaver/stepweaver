@@ -8,6 +8,7 @@ export const metadata = {
       'Browse my collection of blog posts, podcasts, projects and more.',
     url: 'https://stepweaver.dev/codex',
     type: 'website',
+    images: ['/images/lambda-preview.png'],
   },
 };
 

@@ -10,7 +10,7 @@ const seoConfig = {
     description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
     images: [
       {
-        url: 'https://stepweaver.dev/images/social-preview.png',
+        url: 'https://stepweaver.dev/images/lambda-preview.png',
         width: 1200,
         height: 630,
         alt: 'Stephen Weaver Terminal Portfolio',

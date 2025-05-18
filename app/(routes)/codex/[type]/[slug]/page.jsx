@@ -14,6 +14,38 @@ const postComponents = {
   // book: Post,
 };
 
+export async function generateMetadata({ params }) {
+  const { type, slug } = params;
+
+  // Read the file to get frontmatter
+  const filePath = path.join(process.cwd(), 'content', type, `${slug}.mdx`);
+
+  let frontmatter = {};
+  try {
+    const source = await fs.readFile(filePath, 'utf8');
+    frontmatter = matter(source).data;
+  } catch (err) {
+    return {
+      title: 'Not Found',
+      description: 'The page you requested was not found',
+    };
+  }
+
+  return {
+    title: frontmatter.title,
+    description:
+      frontmatter.excerpt || `${frontmatter.title} - Stephen Weaver's Codex`,
+    openGraph: {
+      title: frontmatter.title,
+      description:
+        frontmatter.excerpt || `${frontmatter.title} - Stephen Weaver's Codex`,
+      type: 'article',
+      url: `https://stepweaver.dev/codex/${type}/${slug}`,
+      images: ['/images/lambda-preview.png'],
+    },
+  };
+}
+
 export default async function Page({ params }) {
   const resolvedParams = await params;
   const { type, slug } = resolvedParams;

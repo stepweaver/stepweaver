@@ -4,6 +4,7 @@ export const metadata = {
   openGraph: {
     title: 'Resist | Stephen Weaver',
     description: 'Speaking truth and refusing to be silenced',
+    images: ['/images/resist-preview.png'],
   },
 };
 
