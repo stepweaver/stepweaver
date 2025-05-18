@@ -153,7 +153,7 @@ export default function Contact() {
                 </GlitchButton>
 
                 <GlitchButton href='/weaver_resume.pdf' download={true}>
-                  DOWNLOAD RESUME
+                  GET RESUME
                 </GlitchButton>
               </div>
             </form>
