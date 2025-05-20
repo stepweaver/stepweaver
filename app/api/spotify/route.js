@@ -4,11 +4,18 @@ export const dynamic = 'force-dynamic'; // Disable route caching
 
 export async function GET(request) {
   try {
+    // Log environment check
+    console.log(
+      'Spotify API credentials check:',
+      !!process.env.SPOTIFY_CLIENT_ID ? 'ID present' : 'ID missing',
+      !!process.env.SPOTIFY_CLIENT_SECRET ? 'Secret present' : 'Secret missing'
+    );
+
     // Get show ID from the URL parameters
     const { searchParams } = new URL(request.url);
     const showId = searchParams.get('showId');
 
-    console.log('Fetching Spotify podcast with ID:', showId);
+    console.log('Processing request for Spotify ID:', showId);
 
     // Get token from Spotify
     const tokenResponse = await fetch(
@@ -75,7 +82,7 @@ export async function GET(request) {
       episodes: episodes.items,
     });
   } catch (error) {
-    console.error('Error in Spotify API route:', error);
+    console.error('Detailed Spotify API error:', error.stack);
     return NextResponse.json(
       { error: `Failed to fetch Spotify data: ${error.message}` },
       { status: 500 }

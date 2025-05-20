@@ -17,7 +17,7 @@ export default function TabNavigation({
   return (
     <>
       {/* Desktop Tabs */}
-      <div className='hidden sm:flex font-mono text-sm mb-2'>
+      <div className='hidden sm:flex text-sm mb-2'>
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -25,7 +25,7 @@ export default function TabNavigation({
               setActiveTab(tab.key);
               setIsLoading(true);
             }}
-            className={`mr-1 px-3 py-1 cursor-pointer ${
+            className={`mr-1 px-3 py-1 cursor-pointer font-ibm ${
               activeTab === tab.key
                 ? 'bg-terminal-bg text-terminal-green border-b border-terminal-green'
                 : 'text-terminal-dimmed hover:text-terminal-text'
@@ -43,7 +43,7 @@ export default function TabNavigation({
             setActiveTab(e.target.value);
             setIsLoading(true);
           }}
-          className='w-full p-2 border border-terminal-green bg-terminal-dark text-terminal-green font-mono text-sm rounded'
+          className='w-full p-2 border border-terminal-green bg-terminal-dark text-terminal-green font-ibm text-sm rounded'
           style={{
             backgroundColor: 'var(--color-terminal-dark)',
             color: 'var(--color-terminal-green)',

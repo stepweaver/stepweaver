@@ -29,5 +29,5 @@ export default function TimeDisplay() {
     return () => clearInterval(intervalId);
   }, []);
 
-  return <div className='text-terminal-dimmed text-xs'>{time}</div>;
+  return <div className='text-terminal-dimmed text-sm'>{time}</div>;
 }

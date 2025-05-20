@@ -33,14 +33,20 @@ export default function PodcastTab({
     async function fetchSpotifyData() {
       try {
         setSpotifyLoading(true);
-        const timestamp = new Date().getTime(); // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        console.log('Fetching Spotify data for:', podcastId); // Add logging
+
         const response = await fetch(
           `/api/spotify?showId=${podcastId}&t=${timestamp}`
         );
         if (!response.ok) {
-          throw new Error('Failed to fetch Spotify data');
+          const errorData = await response.text(); // Get error text
+          console.error('Spotify API error:', errorData);
+          throw new Error(`Failed to fetch Spotify data: ${response.status}`);
         }
+
         const data = await response.json();
+        console.log('Spotify data received:', data); // Log success
         setSpotifyData(data);
         setSpotifyLoading(false);
       } catch (err) {
@@ -180,8 +186,19 @@ export default function PodcastTab({
           </div>
         </div>
       ) : spotifyError ? (
-        <div className='py-2 text-terminal-dimmed text-xs'>
-          <p>Spotify data unavailable</p>
+        <div className='mb-4 p-3 border border-terminal-yellow/30 bg-terminal-dark'>
+          <p className='text-terminal-yellow'>Spotify data unavailable</p>
+          <p className='text-terminal-dimmed text-xs mt-1'>
+            Visit podcast directly at:
+          </p>
+          <a
+            href={activeContent.spotifyUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-terminal-green text-xs'
+          >
+            {activeContent.title} on Spotify →
+          </a>
         </div>
       ) : (
         <div>
