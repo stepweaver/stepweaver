@@ -5,80 +5,58 @@ export default function TabNavigation({
   setActiveTab,
   setIsLoading,
 }) {
+  const tabs = [
+    { key: 'home', label: '/home' },
+    { key: 'ethos', label: '/ethos' },
+    { key: 'news', label: '/news' },
+    { key: 'podcast', label: '/podcast' },
+    { key: 'resources', label: '/resources' },
+    { key: 'music', label: '/music' },
+  ];
+
   return (
-    <div className='flex text-sm mb-2'>
-      <button
-        onClick={() => setActiveTab('home')}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'home'
-            ? 'bg-terminal-bg text-terminal-green border-b border-terminal-green'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /home
-      </button>
-      <button
-        onClick={() => setActiveTab('ethos')}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'ethos'
-            ? 'bg-terminal-bg text-terminal-yellow border-b border-terminal-yellow'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /ethos
-      </button>
-      <button
-        onClick={() => {
-          setActiveTab('news');
-          setIsLoading(true);
-        }}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'news'
-            ? 'bg-terminal-bg text-terminal-blue border-b border-terminal-blue'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /news
-      </button>
-      <button
-        onClick={() => {
-          setActiveTab('podcast');
-          setIsLoading(true);
-        }}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'podcast'
-            ? 'bg-terminal-bg text-terminal-purple border-b border-terminal-purple'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /podcast
-      </button>
-      <button
-        onClick={() => {
-          setActiveTab('resources');
-          setIsLoading(true);
-        }}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'resources'
-            ? 'bg-terminal-bg text-terminal-red border-b border-terminal-red'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /resources
-      </button>
-      <button
-        onClick={() => {
-          setActiveTab('music');
-          setIsLoading(true);
-        }}
-        className={`mr-1 px-3 py-1 cursor-pointer ${
-          activeTab === 'music'
-            ? 'bg-terminal-bg text-terminal-green border-b border-terminal-green'
-            : 'text-terminal-dimmed hover:text-terminal-text'
-        }`}
-      >
-        /music
-      </button>
-    </div>
+    <>
+      {/* Desktop Tabs */}
+      <div className='hidden sm:flex font-mono text-sm mb-2'>
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => {
+              setActiveTab(tab.key);
+              setIsLoading(true);
+            }}
+            className={`mr-1 px-3 py-1 cursor-pointer ${
+              activeTab === tab.key
+                ? 'bg-terminal-bg text-terminal-green border-b border-terminal-green'
+                : 'text-terminal-dimmed hover:text-terminal-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {/* Mobile Dropdown */}
+      <div className='sm:hidden mb-2'>
+        <select
+          value={activeTab}
+          onChange={(e) => {
+            setActiveTab(e.target.value);
+            setIsLoading(true);
+          }}
+          className='w-full p-2 border border-terminal-green bg-terminal-dark text-terminal-green font-mono text-sm rounded'
+          style={{
+            backgroundColor: 'var(--color-terminal-dark)',
+            color: 'var(--color-terminal-green)',
+            borderColor: 'var(--color-terminal-green)',
+          }}
+        >
+          {tabs.map((tab) => (
+            <option key={tab.key} value={tab.key}>
+              {tab.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </>
   );
 }
