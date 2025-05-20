@@ -23,6 +23,8 @@ export default function Header() {
         return '[Building, Learning, Growing]';
       case '/codex':
         return '[BEHOLD! My glorious collection]';
+      case '/resist':
+        return 'Pissed of [veteran] in South Bend';
       default:
         return '[Web Developer] in South Bend';
     }
