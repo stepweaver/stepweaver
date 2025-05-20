@@ -1,4 +1,3 @@
-// app/(routes)/resist/page.jsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -6,21 +5,41 @@ import TabNavigation from '@/components/resist/TabNavigation';
 import HomeTab from '@/components/resist/HomeTab';
 import EthosTab from '@/components/resist/EthosTab';
 import NewsTab from '@/components/resist/NewsTab';
+import PodcastTab from '@/components/resist/PodcastTab';
+import ResourcesTab from '@/components/resist/ResourcesTab';
 import TimeDisplay from '@/components/resist/TimeDisplay';
+import MusicTab from '@/components/resist/MusicTab';
 
 export default function ResistPage() {
-  // State for RSS feed
-  const [feedItems, setFeedItems] = useState([]);
+  // State for RSS feeds
+  const [parsedFeedItems, setParsedFeedItems] = useState({
+    parnas: [],
+    underthedesk: [],
+    reich: [],
+    meidastouch: [],
+    findout: [],
+    lincoln: [],
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('home'); // 'home', 'ethos', or 'news'
+  const [activeTab, setActiveTab] = useState('home'); // 'home', 'ethos', 'news', 'podcast', or 'resources'
+  const [currentFeedSource, setCurrentFeedSource] = useState('parnas');
 
   useEffect(() => {
-    async function fetchFeed() {
-      if (activeTab !== 'news') return; // Only fetch when news tab is active
+    async function fetchFeed(source) {
+      if (!source) return;
 
       try {
-        const response = await fetch('/api/rss');
+        // Check if we already have the feed data
+        if (parsedFeedItems[source] && parsedFeedItems[source].length > 0) {
+          setIsLoading(false);
+          return;
+        }
+
+        const timestamp = new Date().getTime();
+        const response = await fetch(
+          `/api/rss?source=${source}&t=${timestamp}`
+        );
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Server error');
@@ -29,23 +48,40 @@ export default function ResistPage() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
-        setFeedItems(data.items || []);
+        // Update the specific feed source data
+        setParsedFeedItems((prev) => ({
+          ...prev,
+          [source]: data.items || [],
+        }));
         setIsLoading(false);
       } catch (err) {
-        console.error('Error fetching RSS feed:', err);
-        setError(err.message || 'Failed to load news feed');
+        console.error(`Error fetching ${source} RSS feed:`, err);
+        setError(err.message || `Failed to load ${source} feed`);
         setIsLoading(false);
       }
     }
 
-    fetchFeed();
+    // Determine which feed(s) to fetch based on active tab
+    if (activeTab === 'news') {
+      setCurrentFeedSource('parnas');
+      fetchFeed('parnas');
+      fetchFeed('underthedesk');
+      fetchFeed('meidastouch');
+    } else if (activeTab === 'podcast') {
+      setCurrentFeedSource('findout');
+      fetchFeed('findout');
+      fetchFeed('lincoln');
+    } else if (activeTab === 'resources') {
+      setCurrentFeedSource('reich');
+      fetchFeed('reich');
+    }
   }, [activeTab]);
 
   return (
     <div className='max-w-3xl mx-auto px-3 py-4'>
       {/* Terminal Header */}
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-mono text-sm flex items-center'>
+        <div className='text-lg flex items-center'>
           <span className='text-terminal-red font-bold mr-1.5'>#</span>
           <span className='text-terminal-text'>
             RESIST<span className='animate-blink ml-1'>_</span>
@@ -73,14 +109,46 @@ export default function ResistPage() {
 
         {/* News Tab Content */}
         {activeTab === 'news' && (
-          <NewsTab feedItems={feedItems} isLoading={isLoading} error={error} />
+          <NewsTab
+            feedItems={
+              currentFeedSource === 'parnas'
+                ? parsedFeedItems.parnas
+                : currentFeedSource === 'underthedesk'
+                ? parsedFeedItems.underthedesk
+                : parsedFeedItems.meidastouch
+            }
+            isLoading={isLoading}
+            error={error}
+            setFeedSource={setCurrentFeedSource}
+          />
         )}
-      </div>
 
-      {/* Terminal Command Line */}
-      <div className='flex items-center pt-2 text-sm font-mono'>
-        <span className='text-terminal-green mr-1.5'>$</span>
-        <span className='text-terminal-text animate-blink'>_</span>
+        {/* Podcast Tab Content */}
+        {activeTab === 'podcast' && (
+          <PodcastTab
+            feedItems={
+              currentFeedSource === 'findout'
+                ? parsedFeedItems.findout
+                : parsedFeedItems.lincoln
+            }
+            isLoading={isLoading}
+            error={error}
+            setFeedSource={setCurrentFeedSource}
+          />
+        )}
+
+        {/* Resource Tab Content */}
+        {activeTab === 'resources' && (
+          <ResourcesTab
+            feedItems={parsedFeedItems.reich}
+            isLoading={isLoading}
+            error={error}
+            setFeedSource={setCurrentFeedSource}
+          />
+        )}
+
+        {/* Music Tab Content */}
+        {activeTab === 'music' && <MusicTab />}
       </div>
     </div>
   );

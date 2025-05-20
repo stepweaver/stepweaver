@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function HomeTab({ setActiveTab, setIsLoading }) {
   return (
-    <div className='p-4 text-sm font-mono'>
+    <div className='p-4 text-sm'>
       <div className='text-terminal-green text-center pb-3 border-b border-terminal-dimmed/20'>
-        <p className='text-sm'>Welcome to the resistance.</p>
+        <p className='text-lg'>WELCOME TO THE RESISTANCE</p>
       </div>
 
       <div className='py-8 flex flex-col items-center justify-center space-y-6'>
@@ -37,7 +37,7 @@ export default function HomeTab({ setActiveTab, setIsLoading }) {
         </div>
       </div>
 
-      <div className='text-terminal-dimmed text-center text-xs pt-3 border-t border-terminal-dimmed/20'>
+      <div className='text-terminal-dimmed text-center text-sm pt-3 border-t border-terminal-dimmed/20'>
         <p>
           "The only thing necessary for the triumph of evil is for good people
           to do nothing."

@@ -68,7 +68,7 @@ export default function GlitchingLoader() {
   return (
     <div className='flex justify-center items-center py-20'>
       <div
-        className={`${styles.textGlitch} text-terminal-green text-xl font-ibm font-mono tracking-wider relative overflow-hidden`}
+        className={`${styles.textGlitch} text-terminal-green text-xl font-ibm tracking-wider relative overflow-hidden`}
       >
         {glitchState !== 0 && (
           <span

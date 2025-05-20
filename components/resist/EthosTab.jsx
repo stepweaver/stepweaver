@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function EthosTab() {
   return (
-    <div className='p-4 text-sm font-mono'>
+    <div className='p-4 text-sm'>
       <div className='text-terminal-yellow border-b border-terminal-dimmed/20 pb-2 mb-3'>
-        <p className='text-sm'>My Ethos</p>
+        <p className='text-lg'>MY ETHOS</p>
       </div>
 
       <div className='space-y-3 text-terminal-text/90'>

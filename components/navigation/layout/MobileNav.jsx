@@ -131,7 +131,7 @@ export default function MobileNav() {
           </div>
 
           <div className='p-6 text-xl h-[calc(100vh-56px)] overflow-y-auto'>
-            <div className='mb-6 text-terminal-dimmed text-sm font-mono border-b border-terminal-dimmed/20 pb-2'>
+            <div className='mb-6 text-terminal-dimmed text-sm border-b border-terminal-dimmed/20 pb-2'>
               # Navigation options |{' '}
               <span className='text-terminal-green'>user@stepweaver.dev</span>
             </div>
@@ -172,7 +172,7 @@ export default function MobileNav() {
               ))}
             </ul>
 
-            <div className='absolute bottom-0 left-0 right-0 border-t border-terminal-dimmed/30 py-4 px-6 text-terminal-dimmed text-sm font-mono bg-terminal-dark/80 backdrop-blur-sm'>
+            <div className='absolute bottom-0 left-0 right-0 border-t border-terminal-dimmed/30 py-4 px-6 text-terminal-dimmed text-sm bg-terminal-dark/80 backdrop-blur-sm'>
               <div className='flex justify-between items-center'>
                 <div>stepweaver@v1.0</div>
                 <div className='flex items-center'>

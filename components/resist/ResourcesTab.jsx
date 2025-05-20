@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-export default function NewsTab({
+export default function ResourcesTab({
   feedItems,
   isLoading,
   error,
   setFeedSource,
 }) {
-  const [activeFeed, setActiveFeed] = useState('parnas');
+  const [activeFeed, setActiveFeed] = useState('reich');
 
   // Update the parent component's feed source when activeFeed changes
   useEffect(() => {
@@ -73,36 +73,19 @@ export default function NewsTab({
 
   // Content based on feed source
   const feedContent = {
-    parnas: {
-      title: 'The Parnas Perspective',
-      subtitle: 'News and Gen Z perspective on current issues',
-      color: 'text-terminal-blue',
-      borderColor: 'border-terminal-blue',
-      buttonColor: 'text-terminal-blue hover:text-terminal-cyan',
-      subscribeUrl: 'https://aaronparnas.substack.com/',
-      subscribeChannel: 'parnas-perspective',
+    reich: {
+      title: 'Robert Reich',
+      subtitle: 'Economic policy and political analysis',
+      color: 'text-terminal-red',
+      borderColor: 'border-terminal-red',
+      buttonColor: 'text-terminal-red hover:text-terminal-orange',
+      subscribeUrl: 'https://robertreich.substack.com/',
+      subscribeChannel: 'robert-reich',
     },
-    underthedesk: {
-      title: 'Under the Desk News',
-      subtitle: 'Current news and political analysis',
-      color: 'text-terminal-magenta',
-      borderColor: 'border-terminal-magenta',
-      buttonColor: 'text-terminal-magenta hover:text-terminal-pink',
-      subscribeUrl: 'https://underthedesknews.substack.com/',
-      subscribeChannel: 'under-the-desk',
-    },
-    meidastouch: {
-      title: 'Meidas Touch Network',
-      subtitle: 'Progressive news and political commentary',
-      color: 'text-terminal-yellow',
-      borderColor: 'border-terminal-yellow',
-      buttonColor: 'text-terminal-yellow hover:text-terminal-yellow',
-      subscribeUrl: 'https://meidastouch.substack.com/',
-      subscribeChannel: 'meidas-touch',
-    },
+    // Could add more resources here in the future
   };
 
-  const activeContent = feedContent[activeFeed] || feedContent.parnas;
+  const activeContent = feedContent[activeFeed] || feedContent.reich;
 
   return (
     <div className='p-4 text-sm'>
@@ -117,35 +100,16 @@ export default function NewsTab({
         </div>
         <div className='flex space-x-2 pt-1'>
           <button
-            onClick={() => setActiveFeed('parnas')}
+            onClick={() => setActiveFeed('reich')}
             className={`px-2 py-0.5 text-xs cursor-pointer ${
-              activeFeed === 'parnas'
-                ? 'bg-terminal-blue/10 text-terminal-blue border border-terminal-blue/20'
+              activeFeed === 'reich'
+                ? 'bg-terminal-red/10 text-terminal-red border border-terminal-red/20'
                 : 'text-terminal-dimmed hover:text-terminal-text'
             }`}
           >
-            parnas
+            reich
           </button>
-          <button
-            onClick={() => setActiveFeed('underthedesk')}
-            className={`px-2 py-0.5 text-xs cursor-pointer ${
-              activeFeed === 'underthedesk'
-                ? 'bg-terminal-magenta/10 text-terminal-magenta border border-terminal-magenta/20'
-                : 'text-terminal-dimmed hover:text-terminal-text'
-            }`}
-          >
-            under-the-desk
-          </button>
-          <button
-            onClick={() => setActiveFeed('meidastouch')}
-            className={`px-2 py-0.5 text-xs cursor-pointer ${
-              activeFeed === 'meidastouch'
-                ? 'bg-terminal-yellow/10 text-terminal-yellow border border-terminal-yellow/20'
-                : 'text-terminal-dimmed hover:text-terminal-text'
-            }`}
-          >
-            meidas-touch
-          </button>
+          {/* More resources can be added here in the future */}
         </div>
       </div>
 
@@ -161,7 +125,7 @@ export default function NewsTab({
         <div className='py-4 border-l-2 border-terminal-red pl-3'>
           <p className='text-terminal-red'>ERROR: {error}</p>
           <p className='text-terminal-dimmed mt-1'>
-            Failed to retrieve news feed
+            Failed to retrieve resources feed
           </p>
         </div>
       ) : feedItems.length === 0 ? (
@@ -185,24 +149,12 @@ export default function NewsTab({
                   rel='noopener noreferrer'
                   className='block cursor-pointer'
                 >
-                  <div className='flex justify-between items-center'>
-                    <p
-                      className='text-terminal-yellow truncate mr-2'
-                      style={{ maxWidth: '75%' }}
-                    >
+                  <div>
+                    <p className='text-terminal-yellow'>
                       {decodeHtmlEntities(item.title)}
                     </p>
-                    <p className='text-terminal-dimmed whitespace-nowrap'>
-                      [{new Date(item.pubDate).getFullYear()}-
-                      {new Date(item.pubDate).toLocaleString('en-US', {
-                        month: 'short',
-                      })}
-                      -
-                      {String(new Date(item.pubDate).getDate()).padStart(
-                        2,
-                        '0'
-                      )}
-                      ]
+                    <p className='text-terminal-dimmed text-xs mt-0.5'>
+                      {formatDate(item.pubDate)}
                     </p>
                   </div>
                 </a>

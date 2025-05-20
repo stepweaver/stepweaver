@@ -1,14 +1,36 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request) {
   try {
-    console.log('RSS API: Fetching feed from Substack...');
+    // Get feed source from query parameter or default to Parnas
+    const { searchParams } = new URL(request.url);
+    const feedSource = searchParams.get('source') || 'parnas';
 
-    // Fetch RSS feed from Substack with timeout
+    // Define feed URLs based on source
+    const feedUrls = {
+      parnas: 'https://aaronparnas.substack.com/feed',
+      underthedesk: 'https://underthedesknews.substack.com/feed',
+      reich: 'https://robertreich.substack.com/feed',
+      meidastouch: 'https://meidastouch.substack.com/feed',
+      findout: 'https://findoutpodcast.substack.com/feed',
+      lincoln: 'https://lincolnproject.us/feed',
+    };
+
+    const feedUrl = feedUrls[feedSource];
+    if (!feedUrl) {
+      return NextResponse.json(
+        { error: `Invalid feed source: ${feedSource}` },
+        { status: 400 }
+      );
+    }
+
+    console.log(`RSS API: Fetching feed from ${feedSource} at ${feedUrl}...`);
+
+    // Fetch RSS feed with timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
 
-    const response = await fetch('https://aaronparnas.substack.com/feed', {
+    const response = await fetch(feedUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; RSS-Reader/1.0)',
       },
@@ -46,7 +68,7 @@ export async function GET() {
       return NextResponse.json({ items: [] });
     }
 
-    return NextResponse.json({ items });
+    return NextResponse.json({ items, source: feedSource });
   } catch (error) {
     console.error('Error in RSS API route:', error);
     return NextResponse.json(

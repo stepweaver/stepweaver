@@ -20,11 +20,11 @@ export default function Header() {
       case '/':
         return '[Web Developer] in South Bend';
       case '/about':
-        return '[Building, Learning, Growing]';
+        return 'All about [me]!';
       case '/codex':
-        return '[BEHOLD! My glorious collection]';
+        return 'BEHOLD! My glorious [collection]';
       case '/resist':
-        return 'Pissed of [veteran] in South Bend';
+        return 'Pissed off [veteran] in South Bend';
       default:
         return '[Web Developer] in South Bend';
     }
