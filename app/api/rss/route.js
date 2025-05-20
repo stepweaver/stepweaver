@@ -14,6 +14,7 @@ export async function GET(request) {
       meidastouch: 'https://meidastouch.substack.com/feed',
       findout: 'https://findoutpodcast.substack.com/feed',
       lincoln: 'https://lincolnproject.us/feed',
+      offense: 'https://onoffense.substack.com/feed',
     };
 
     const feedUrl = feedUrls[feedSource];

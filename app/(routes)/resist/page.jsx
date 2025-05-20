@@ -19,6 +19,7 @@ export default function ResistPage() {
     meidastouch: [],
     findout: [],
     lincoln: [],
+    offense: [],
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,6 +75,7 @@ export default function ResistPage() {
     } else if (activeTab === 'resources') {
       setCurrentFeedSource('reich');
       fetchFeed('reich');
+      fetchFeed('offense');
     }
   }, [activeTab]);
 
@@ -83,7 +85,7 @@ export default function ResistPage() {
       <div className='flex justify-between items-center mb-3'>
         <div className='text-lg flex items-center'>
           <span className='text-terminal-red font-bold mr-1.5'>#</span>
-          <span className='text-terminal-text'>
+          <span className='text-terminal-white'>
             RESIST<span className='animate-blink ml-1'>_</span>
           </span>
         </div>

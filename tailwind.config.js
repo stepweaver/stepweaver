@@ -25,6 +25,7 @@ module.exports = {
           pink: 'var(--color-terminal-pink)',
           purple: 'var(--color-terminal-purple)',
           orange: 'var(--color-terminal-orange)',
+          white: 'var(--color-terminal-white)',
         },
       },
       backdropBlur: {

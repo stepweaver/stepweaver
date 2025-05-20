@@ -82,7 +82,15 @@ export default function ResourcesTab({
       subscribeUrl: 'https://robertreich.substack.com/',
       subscribeChannel: 'robert-reich',
     },
-    // Could add more resources here in the future
+    offense: {
+      title: 'On Offense with Kris Goldsmith',
+      subtitle: 'Veteran fighting against fascism',
+      color: 'text-terminal-white',
+      borderColor: 'border-terminal-white',
+      buttonColor: 'text-terminal-white hover:text-terminal-text',
+      subscribeUrl: 'https://onoffense.substack.com/',
+      subscribeChannel: 'on-offense',
+    },
   };
 
   const activeContent = feedContent[activeFeed] || feedContent.reich;
@@ -109,7 +117,16 @@ export default function ResourcesTab({
           >
             reich
           </button>
-          {/* More resources can be added here in the future */}
+          <button
+            onClick={() => setActiveFeed('offense')}
+            className={`px-2 py-0.5 text-xs cursor-pointer ${
+              activeFeed === 'offense'
+                ? 'bg-terminal-white/10 text-terminal-white border border-terminal-white/20'
+                : 'text-terminal-dimmed hover:text-terminal-text'
+            }`}
+          >
+            on-offense
+          </button>
         </div>
       </div>
 
@@ -149,12 +166,24 @@ export default function ResourcesTab({
                   rel='noopener noreferrer'
                   className='block cursor-pointer'
                 >
-                  <div>
-                    <p className='text-terminal-yellow'>
+                  <div className='flex justify-between items-center'>
+                    <p
+                      className='text-terminal-yellow truncate mr-2'
+                      style={{ maxWidth: '75%' }}
+                    >
                       {decodeHtmlEntities(item.title)}
                     </p>
-                    <p className='text-terminal-dimmed text-xs mt-0.5'>
-                      {formatDate(item.pubDate)}
+                    <p className='text-terminal-dimmed whitespace-nowrap'>
+                      [{new Date(item.pubDate).getFullYear()}-
+                      {new Date(item.pubDate).toLocaleString('en-US', {
+                        month: 'short',
+                      })}
+                      -
+                      {String(new Date(item.pubDate).getDate()).padStart(
+                        2,
+                        '0'
+                      )}
+                      ]
                     </p>
                   </div>
                 </a>
