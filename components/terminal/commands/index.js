@@ -356,7 +356,7 @@ const displayResume = () => {
     '<span class="text-terminal-white ml-4">Frontend</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">React, Next.js, JavaScript, TypeScript, Tailwind CSS</span>',
     '<span class="text-terminal-white ml-4">Backend</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Node.js, Express, MongoDB, SQL, RESTful APIs</span>',
     '<span class="text-terminal-white ml-4">DevOps</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Git, GitHub, AWS, npm/yarn</span>',
-    '<span class="text-terminal-white ml-4">AI & Prompt Engineering</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">ChatGPT, Claude, Gemini, Cursor IDE, prompt chaining, LLM-assisted development</span>',
+    '<span class="text-terminal-white ml-4">AI / Prompt Engineering</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">LLMs, prompt chaining, AI-assisted dev, Cursor IDE</span>',
     '',
     '<span class="text-terminal-green">EDUCATION</span>',
     '<span class="text-terminal-white ml-4">Bachelor of Arts, Grand Valley State University</span> <span class="text-terminal-yellow">-</span> <span class="text-terminal-green">Communication Studies</span>',
