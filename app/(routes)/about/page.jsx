@@ -24,7 +24,7 @@ export default function AboutPage() {
           projects, solving real problems, and shipping real code.
         </p>
         <p className='text-terminal-text mt-3'>
-          I move fast, think clearly, and build with purpose. Whether it&apos;s
+          I move fast, adapt quickly, and build with purpose. Whether it&apos;s
           frontend interfaces, full-stack applications, or weird little tools
           that make life easier or more fun, I&apos;m always chasing that moment
           where things just click — when a messy idea turns into something that
