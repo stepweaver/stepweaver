@@ -25,24 +25,13 @@ export default function Home() {
     fetchPosts();
   }, []);
 
-  // Group by type and get most recent
-  const mostRecentByType = () => {
-    const grouped = {};
-    posts.forEach((post) => {
-      if (!grouped[post.type]) grouped[post.type] = [];
-      grouped[post.type].push(post);
+  // Get all posts sorted by updated or date, most recent first
+  const allRecentPosts = () => {
+    return [...posts].sort((a, b) => {
+      const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
+      const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
+      return dateB - dateA;
     });
-    // Sort each group with updated date priority and pick the first
-    return Object.entries(grouped)
-      .map(([type, arr]) => {
-        arr.sort((a, b) => {
-          const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
-          const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
-          return dateB - dateA;
-        });
-        return { type, content: arr[0] };
-      })
-      .filter((item) => item.content);
   };
 
   // Optional: For tag filtering if implemented later
@@ -58,7 +47,10 @@ export default function Home() {
           # WELCOME<span className='animate-blink'>_</span>
         </h2>
         <p className='text-terminal-text mt-4'>
-        I&apos;m a full-stack developer and business-minded technologist using AI to build smarter, faster, and bolder. From custom dev tools to interactive digital experiences, I craft solutions that blend code, creativity, and strategy—because the future won&apos;t wait.
+          I&apos;m a full-stack developer and business-minded technologist using
+          AI to build smarter, faster, and bolder. From custom dev tools to
+          interactive digital experiences, I craft solutions that blend code,
+          creativity, and strategy—because the future won&apos;t wait.
         </p>
       </div>
       <div className='text-terminal-dimmed text-sm mt-2'>$ cat welcome.md</div>
@@ -77,11 +69,11 @@ export default function Home() {
           <div className='text-terminal-dimmed'>Loading posts...</div>
         ) : (
           <div className='border-t border-terminal-dimmed/30 pt-2'>
-            {mostRecentByType().map((item) => (
+            {allRecentPosts().map((post) => (
               <PostItem
-                key={`${item.type}-${item.content.slug}`}
-                type={item.type}
-                content={item.content}
+                key={`${post.type}-${post.slug}`}
+                type={post.type}
+                content={post}
                 onTagClick={handleTagClick}
               />
             ))}
