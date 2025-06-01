@@ -58,9 +58,7 @@ export default function Home() {
           # WELCOME<span className='animate-blink'>_</span>
         </h2>
         <p className='text-terminal-text mt-4'>
-          I&apos;m a web developer and business analyst at the University of
-          Notre Dame with a passion for creating unique digital experiences and
-          building tools that help people work smarter, not harder.
+        I&apos;m a full-stack developer and business-minded technologist using AI to build smarter, faster, and bolder. From custom dev tools to interactive digital experiences, I craft solutions that blend code, creativity, and strategy—because the future won&apos;t wait.
         </p>
       </div>
       <div className='text-terminal-dimmed text-sm mt-2'>$ cat welcome.md</div>

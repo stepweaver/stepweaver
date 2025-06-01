@@ -19,19 +19,31 @@ export default function AboutPage() {
           # ABOUT ME<span className='blink'>_</span>
         </h2>
         <p className='text-terminal-text mt-4'>
-          I&apos;m a problem-solver, builder, and relentless learner with a
-          passion for web development and modern JavaScript frameworks. I don't
-          just code—I engineer, refine, and optimize.
+          I&apos;m a developer who learns by building. I didn&apos;t wait for a
+          roadmap — I taught myself the skills I needed by diving into real
+          projects, solving real problems, and shipping real code.
         </p>
         <p className='text-terminal-text mt-3'>
-          Whether I&apos;m building full-stack applications, exploring DevOps
-          automation, or pushing the boundaries of what&apos;s possible with new
-          technologies, I thrive on learning, adapting, and solving complex
-          problems.
+          I move fast, think clearly, and build with purpose. Whether it&apos;s
+          frontend interfaces, full-stack applications, or weird little tools
+          that make life easier or more fun, I&apos;m always chasing that moment
+          where things just click — when a messy idea turns into something that
+          works.
         </p>
         <p className='text-terminal-text mt-3'>
-          I believe in continuous growth and collaboration, always striving to
-          create solutions that are as efficient as they are impactful.
+          I love clean code, clever solutions, and the satisfaction of pushing
+          through a tough bug. I care about craft, but I care even more about
+          shipping things that matter.
+        </p>
+        <p className='text-terminal-text mt-3'>
+          Right now, I&apos;m looking for work — freelance or full-time. If
+          you&apos;re building something ambitious and need a developer
+          who&apos;s hungry, hands-on, and ready to contribute, let&apos;s talk.
+        </p>
+        <p className='text-terminal-text mt-3'>
+          I&apos;m not here to play at this.
+          <br />
+          I&apos;m here to build.
         </p>
       </div>
       <div className='text-terminal-dimmed text-sm mt-2'>$ cat about.md</div>

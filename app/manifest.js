@@ -3,7 +3,7 @@ export default function manifest() {
     name: 'Stephen Weaver | Web Developer',
     short_name: 'Stephen Weaver',
     description:
-      'Terminal-inspired portfolio of Stephen Weaver, web developer and University of Notre Dame business analyst',
+      'Terminal-inspired portfolio of Stephen Weaver, full-stack developer and business-minded technologist.',
     start_url: '/',
     display: 'standalone',
     background_color: '#000000',
