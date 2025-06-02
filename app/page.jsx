@@ -28,13 +28,8 @@ export default function Home() {
   // Get all posts sorted by updated or date, most recent first
   const allRecentPosts = () => {
     return [...posts].sort((a, b) => {
-      // Clean up dates by removing quotes if present
-      const dateA = a.updated
-        ? new Date(a.updated.replace(/^'|'$/g, ''))
-        : new Date(a.date.replace(/^'|'$/g, ''));
-      const dateB = b.updated
-        ? new Date(b.updated.replace(/^'|'$/g, ''))
-        : new Date(b.date.replace(/^'|'$/g, ''));
+      const dateA = a.updated ? new Date(a.updated) : new Date(a.date);
+      const dateB = b.updated ? new Date(b.updated) : new Date(b.date);
       return dateB - dateA;
     });
   };

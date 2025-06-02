@@ -31,6 +31,17 @@ export default function PostItem({ type, content, onTagClick }) {
     type: type,
   };
 
+  // Format the date display
+  const getDateDisplay = () => {
+    if (content.updated) {
+      return `Updated: ${formatDate(content.updated)}`;
+    }
+    if (content.date) {
+      return formatDate(content.date);
+    }
+    return '[No Date]';
+  };
+
   return (
     <Link
       href={`/codex/${type}/${content.slug}`}
@@ -70,9 +81,7 @@ export default function PostItem({ type, content, onTagClick }) {
               : { fontSize: '16px' }
           }
         >
-          {content.updated
-            ? `Updated: ${formatDate(content.updated)}`
-            : formatDate(content.date)}
+          {getDateDisplay()}
         </div>
       </div>
 

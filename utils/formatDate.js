@@ -1,20 +1,57 @@
 export default function formatDate(dateString) {
-  // Parse the date parts - handle YYYY-MM-DD format
-  const [year, month, day] = dateString
-    .split('-')
-    .map((part) => part.trim().replace(/'/g, ''));
+  // Handle undefined, null, or empty string
+  if (!dateString) {
+    return '[No Date]';
+  }
 
-  // Create Date object with explicit year, month (0-indexed), day
-  const date = new Date(
-    Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day))
-  );
+  try {
+    // Remove any surrounding quotes
+    const cleanDateString = dateString.toString().replace(/^'|'$/g, '').trim();
 
-  // Format parts
-  const formattedYear = date.getUTCFullYear();
-  const formattedMonth = date
-    .toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })
-    .toUpperCase();
-  const formattedDay = String(date.getUTCDate()).padStart(2, '0');
+    // Handle empty string after cleaning
+    if (!cleanDateString) {
+      return '[No Date]';
+    }
 
-  return `[${formattedYear}-${formattedMonth}-${formattedDay}]`;
+    // Split the date string and handle potential parsing errors
+    const [year, month, day] = cleanDateString
+      .split('-')
+      .map((part) => part.trim());
+
+    // Validate date parts
+    if (!year || !month || !day) {
+      return '[Invalid Date]';
+    }
+
+    // Create date object using UTC to avoid timezone issues
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    // Validate the date
+    if (isNaN(date.getTime())) {
+      return '[Invalid Date]';
+    }
+
+    // Format the date
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return `[${year}-${months[date.getUTCMonth()]}-${String(
+      date.getUTCDate()
+    ).padStart(2, '0')}]`;
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '[Invalid Date]';
+  }
 }
