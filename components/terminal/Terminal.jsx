@@ -79,7 +79,7 @@ const updateRegularOutput = (output, setLines) => {
 const Terminal = forwardRef((props, ref) => {
   // Define welcome messages as a constant so we can reuse it
   const welcomeMessages = [
-    '<span class="text-terminal-green">Welcome to λstepweaver terminolio v1.1.0 - A terminal for stepweaver.dev</span>',
+    '<span class="text-terminal-green">Welcome to λstepweaver terminolio v1.2.0 - A terminal for stepweaver.dev</span>',
     '<span>Type <span class="text-terminal-cyan">"help"</span> to see a list of available commands.</span>',
   ];
 
