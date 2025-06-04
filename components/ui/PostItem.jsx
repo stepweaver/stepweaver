@@ -52,19 +52,15 @@ export default function PostItem({ type, content, onTagClick }) {
       {/* Title - description with date right-aligned */}
       <div className='flex items-center justify-between'>
         <div className='flex-1 min-w-0 pr-4'>
-          <div className='truncate'>
+          <div className='mt-2'>
             <span
               className={`text-${typeColor} font-medium transition-all duration-200`}
               style={isHovered ? getGlowStyle(type) : {}}
             >
               {content.title}
             </span>
-            <span
-              className='text-terminal-dimmed mx-2 font-normal transition-all duration-200'
-              style={getSubtleHoverStyle()}
-            >
-              -
-            </span>
+          </div>
+          <div className='mt-1'>
             <span
               className='text-terminal-text font-normal transition-all duration-200'
               style={getSubtleHoverStyle()}
