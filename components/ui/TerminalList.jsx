@@ -13,12 +13,12 @@ export default function TerminalList({ posts, activeTags = [] }) {
         return { color: 'terminal-magenta', symbol: '✨' };
       case 'podcast':
         return { color: 'terminal-purple', symbol: '🎙️' };
+      case 'community':
+        return { color: 'terminal-yellow', symbol: '🌐' };
       case 'article':
         return { color: 'terminal-red', symbol: '📄' };
       case 'tool':
         return { color: 'terminal-blue', symbol: '🛠️' };
-      case 'website':
-        return { color: 'terminal-yellow', symbol: '🌐' };
       default:
         return { color: 'terminal-green', symbol: '' };
     }
@@ -34,13 +34,13 @@ export default function TerminalList({ posts, activeTags = [] }) {
       .toUpperCase()}-${String(date.getDate()).padStart(2, '0')}]`;
   };
 
-  const typeClasses = {
+  const typeColors = {
     blog: 'text-terminal-green',
-    project: 'text-terminal-pink',
     podcast: 'text-terminal-purple',
+    community: 'text-terminal-yellow',
     article: 'text-terminal-red',
     tool: 'text-terminal-blue',
-    website: 'text-terminal-yellow',
+    project: 'text-terminal-magenta',
   };
 
   return (

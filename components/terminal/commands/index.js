@@ -57,7 +57,7 @@ const formatContentItem = (item, index) => {
     case 'tool':
       typeColor = 'text-terminal-blue';
       break;
-    case 'website':
+    case 'community':
       typeColor = 'text-terminal-yellow';
       break;
     default:
@@ -166,7 +166,7 @@ const getTypeColor = (type) => {
       return 'text-terminal-red';
     case 'tool':
       return 'text-terminal-blue';
-    case 'website':
+    case 'community':
       return 'text-terminal-yellow';
     default:
       return 'text-terminal-yellow';
