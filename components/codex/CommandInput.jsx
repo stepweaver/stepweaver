@@ -43,7 +43,7 @@ export default function CommandInput({ onExecuteCommand, placeholder, error }) {
         />
         <button
           type='submit'
-          className='px-2 py-0.5 text-xs bg-terminal-green/10 border border-terminal-green text-terminal-green rounded hover:bg-terminal-green/20'
+          className='px-2 py-0.5 text-xs bg-terminal-green/10 border border-terminal-green text-terminal-green rounded hover:bg-terminal-green/20 cursor-pointer'
         >
           Run
         </button>
