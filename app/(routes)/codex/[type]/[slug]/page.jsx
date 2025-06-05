@@ -8,7 +8,7 @@ import Update from '@/components/mdx/Update';
 const postComponents = {
   blog: Post,
   podcast: Post,
-  website: Post,
+  community: Post,
   // project: Post,
   // tool: Post,
   // book: Post,

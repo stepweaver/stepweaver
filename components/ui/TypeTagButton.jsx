@@ -3,7 +3,7 @@ export default function TypeTagButton({ type, active, onClick, children }) {
     blog: 'bg-terminal-green/20 text-terminal-green border-terminal-green',
     podcast:
       'bg-terminal-purple/20 text-terminal-purple border-terminal-purple',
-    website:
+    community:
       'bg-terminal-yellow/20 text-terminal-yellow border-terminal-yellow',
     article: 'bg-terminal-red/20 text-terminal-red border-terminal-red',
     tool: 'bg-terminal-blue/20 text-terminal-blue border-terminal-blue',
@@ -14,7 +14,7 @@ export default function TypeTagButton({ type, active, onClick, children }) {
   const activeStyles = {
     blog: 'bg-terminal-green text-black border-terminal-green',
     podcast: 'bg-terminal-purple text-black border-terminal-purple',
-    website: 'bg-terminal-yellow text-black border-terminal-yellow',
+    community: 'bg-terminal-yellow text-black border-terminal-yellow',
     article: 'bg-terminal-red text-black border-terminal-red',
     tool: 'bg-terminal-blue text-black border-terminal-blue',
     project: 'bg-terminal-magenta text-black border-terminal-magenta',

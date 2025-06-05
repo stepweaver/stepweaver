@@ -29,7 +29,7 @@ export default function Post({
           class:
             'bg-terminal-purple/20 text-terminal-purple border-terminal-purple',
         };
-      case 'website':
+      case 'community':
         return {
           icon: '🌐',
           class:
@@ -66,7 +66,7 @@ export default function Post({
         return 'text-terminal-green';
       case 'podcast':
         return 'text-terminal-purple';
-      case 'website':
+      case 'community':
         return 'text-terminal-yellow';
       case 'article':
         return 'text-terminal-red';
@@ -85,7 +85,7 @@ export default function Post({
         return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-green)]';
       case 'podcast':
         return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-purple)]';
-      case 'website':
+      case 'community':
         return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-yellow)]';
       case 'article':
         return 'hover:drop-shadow-[0_0_8px_var(--color-terminal-red)]';
@@ -114,7 +114,7 @@ export default function Post({
               ? 'terminal-green'
               : type === 'podcast'
               ? 'terminal-purple'
-              : type === 'website'
+              : type === 'community'
               ? 'terminal-yellow'
               : type === 'article'
               ? 'terminal-red'

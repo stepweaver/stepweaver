@@ -49,10 +49,13 @@ export async function GET() {
   // Process each content type
   processDirectory(path.join(process.cwd(), 'content', 'blog'), 'blog');
   processDirectory(path.join(process.cwd(), 'content', 'podcast'), 'podcast');
-  processDirectory(path.join(process.cwd(), 'content', 'website'), 'website');
   processDirectory(path.join(process.cwd(), 'content', 'project'), 'project');
   processDirectory(path.join(process.cwd(), 'content', 'article'), 'article');
   processDirectory(path.join(process.cwd(), 'content', 'tool'), 'tool');
+  processDirectory(
+    path.join(process.cwd(), 'content', 'community'),
+    'community'
+  );
 
   // Sort posts by date descending (using updated date if available)
   posts.sort((a, b) => {

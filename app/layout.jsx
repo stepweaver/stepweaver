@@ -20,7 +20,7 @@ const ibm3270 = localFont({
 
 export const metadata = {
   title: {
-    template: '%s | stepweaver',
+    template: '%s | Stephen Weaver',
     default: 'Stephen Weaver | Web Developer',
   },
   description: 'A terminal-inspired portfolio and codex by Stephen Weaver.',
