@@ -58,13 +58,18 @@ export default function PostItem({ type, content, onTagClick }) {
           >
             {content.title}
           </span>
+          {/* Date: inline with title on desktop only */}
           <span
-            className='text-terminal-dimmed text-sm whitespace-nowrap ml-4 transition-all duration-200'
+            className='text-terminal-dimmed text-sm whitespace-nowrap ml-4 transition-all duration-200 hidden sm:inline'
             style={isHovered ? { color: typeColorValue } : {}}
           >
             {getDateDisplay()}
           </span>
         </div>
+        {/* Date: below title on mobile only */}
+        <span className='text-terminal-dimmed text-sm mb-1 block sm:hidden'>
+          {getDateDisplay()}
+        </span>
 
         {/* Description row */}
         <div className='text-terminal-text text-sm'>{content.description}</div>
